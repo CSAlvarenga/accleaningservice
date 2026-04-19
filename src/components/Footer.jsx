@@ -2,8 +2,11 @@ function Logo() {
   return (
     <img
       src="/logos/AClean_Logo dark background.svg"
-      alt="AClean Building Solutions"
+      alt="AClean Building Solutions logo"
       style={{ height: 62, width: 'auto' }}
+      loading="lazy"
+      width="186"
+      height="62"
     />
   )
 }

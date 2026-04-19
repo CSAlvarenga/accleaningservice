@@ -158,9 +158,12 @@ export default function Hero() {
             >
               <img
                 src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80"
-                alt="Modern commercial office building"
+                alt="Professional commercial office building maintained by AClean Building Solutions"
                 className="w-full h-full object-cover"
                 loading="eager"
+                fetchpriority="high"
+                width="1200"
+                height="900"
               />
               <div className="absolute inset-0" style={{ background: 'linear-gradient(140deg, rgba(11,37,69,0.08) 0%, transparent 60%)' }} />
               <div
@@ -193,9 +196,12 @@ export default function Hero() {
             >
               <img
                 src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=75"
-                alt="Modern commercial office building"
+                alt="Professional commercial office building maintained by AClean Building Solutions"
                 className="w-full h-full object-cover"
                 loading="eager"
+                fetchpriority="high"
+                width="800"
+                height="450"
               />
               <div
                 className="absolute bottom-3 left-3 px-3 py-2 rounded-lg bg-white text-xs font-bold"

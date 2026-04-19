@@ -29,9 +29,10 @@ const inputErrStyle = {
 const inputCls =
   'w-full px-4 py-3 rounded-xl text-sm font-light focus:outline-none focus:ring-2 transition-all duration-200'
 
-function Label({ children, error }) {
+function Label({ children, error, htmlFor }) {
   return (
     <label
+      htmlFor={htmlFor}
       className="block text-xs font-semibold tracking-widest uppercase mb-1.5"
       style={{ color: error ? '#EF4444' : '#64748B' }}
     >
@@ -185,75 +186,81 @@ export default function Contact() {
                 {/* Name row — 1 col on mobile, 2 col on sm+ */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <Label error={errors.firstName}>First Name *</Label>
+                    <Label error={errors.firstName} htmlFor="firstName">First Name *</Label>
                     <input
-                      type="text" name="firstName" value={form.firstName}
+                      id="firstName" type="text" name="firstName" value={form.firstName}
                       onChange={handleChange} placeholder="Jane"
                       className={inputCls} style={si('firstName')}
+                      aria-required="true" aria-invalid={!!errors.firstName}
                     />
-                    {errors.firstName && <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>}
+                    {errors.firstName && <p className="text-xs text-red-500 mt-1" role="alert">{errors.firstName}</p>}
                   </div>
                   <div>
-                    <Label error={errors.lastName}>Last Name *</Label>
+                    <Label error={errors.lastName} htmlFor="lastName">Last Name *</Label>
                     <input
-                      type="text" name="lastName" value={form.lastName}
+                      id="lastName" type="text" name="lastName" value={form.lastName}
                       onChange={handleChange} placeholder="Smith"
                       className={inputCls} style={si('lastName')}
+                      aria-required="true" aria-invalid={!!errors.lastName}
                     />
-                    {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>}
+                    {errors.lastName && <p className="text-xs text-red-500 mt-1" role="alert">{errors.lastName}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <Label error={errors.company}>Company / Facility *</Label>
+                  <Label error={errors.company} htmlFor="company">Company / Facility *</Label>
                   <input
-                    type="text" name="company" value={form.company}
+                    id="company" type="text" name="company" value={form.company}
                     onChange={handleChange} placeholder="Acme Medical Group"
                     className={inputCls} style={si('company')}
+                    aria-required="true" aria-invalid={!!errors.company}
                   />
-                  {errors.company && <p className="text-xs text-red-500 mt-1">{errors.company}</p>}
+                  {errors.company && <p className="text-xs text-red-500 mt-1" role="alert">{errors.company}</p>}
                 </div>
 
                 {/* Phone + email — 1 col on mobile, 2 col on sm+ */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <Label error={errors.phone}>Phone *</Label>
+                    <Label error={errors.phone} htmlFor="phone">Phone *</Label>
                     <input
-                      type="tel" name="phone" value={form.phone}
+                      id="phone" type="tel" name="phone" value={form.phone}
                       onChange={handleChange} placeholder="(732) 555-0100"
                       className={inputCls} style={si('phone')}
+                      aria-required="true" aria-invalid={!!errors.phone}
                     />
-                    {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
+                    {errors.phone && <p className="text-xs text-red-500 mt-1" role="alert">{errors.phone}</p>}
                   </div>
                   <div>
-                    <Label error={errors.email}>Business Email *</Label>
+                    <Label error={errors.email} htmlFor="email">Business Email *</Label>
                     <input
-                      type="email" name="email" value={form.email}
+                      id="email" type="email" name="email" value={form.email}
                       onChange={handleChange} placeholder="jane@company.com"
                       className={inputCls} style={si('email')}
+                      aria-required="true" aria-invalid={!!errors.email}
                     />
-                    {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+                    {errors.email && <p className="text-xs text-red-500 mt-1" role="alert">{errors.email}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <Label error={errors.facilityType}>Facility Type *</Label>
+                  <Label error={errors.facilityType} htmlFor="facilityType">Facility Type *</Label>
                   <select
-                    name="facilityType" value={form.facilityType}
+                    id="facilityType" name="facilityType" value={form.facilityType}
                     onChange={handleChange} className={inputCls} style={si('facilityType')}
+                    aria-required="true" aria-invalid={!!errors.facilityType}
                   >
                     <option value="" disabled>Select facility type...</option>
                     {facilityTypes.map((t) => (
                       <option key={t} value={t}>{t}</option>
                     ))}
                   </select>
-                  {errors.facilityType && <p className="text-xs text-red-500 mt-1">{errors.facilityType}</p>}
+                  {errors.facilityType && <p className="text-xs text-red-500 mt-1" role="alert">{errors.facilityType}</p>}
                 </div>
 
                 <div>
-                  <Label>Approximate Square Footage</Label>
+                  <Label htmlFor="sqFt">Approximate Square Footage</Label>
                   <select
-                    name="sqFt" value={form.sqFt}
+                    id="sqFt" name="sqFt" value={form.sqFt}
                     onChange={handleChange} className={inputCls} style={inputStyle}
                   >
                     <option value="" disabled>Select range...</option>
@@ -264,9 +271,9 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <Label>Notes / Needs</Label>
+                  <Label htmlFor="message">Notes / Needs</Label>
                   <textarea
-                    name="message" value={form.message}
+                    id="message" name="message" value={form.message}
                     onChange={handleChange}
                     placeholder="Describe your cleaning needs or frequency requirements..."
                     rows={4} className={inputCls}

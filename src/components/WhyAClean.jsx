@@ -59,8 +59,11 @@ export default function WhyAClean() {
             >
               <img
                 src="/logos/AClean_Logo.svg"
-                alt="AClean Building Solutions"
+                alt="AClean Building Solutions logo"
                 style={{ height: 70, width: 'auto', maxWidth: '100%' }}
+                loading="lazy"
+                width="200"
+                height="70"
               />
               <p
                 className="mt-4 text-[10px] sm:text-xs font-semibold tracking-[0.1em] sm:tracking-[0.2em] uppercase text-center"
