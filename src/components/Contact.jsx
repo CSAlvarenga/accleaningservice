@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState, useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 
 const facilityTypes = [
@@ -38,7 +38,38 @@ function Label({ children, htmlFor }) {
 
 export default function Contact() {
   const ref = useRef(null)
+  const formRef = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
+  const [status, setStatus] = useState('idle') // idle | submitting | success | error
+  const [errorMsg, setErrorMsg] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setStatus('submitting')
+    setErrorMsg('')
+
+    const formData = new FormData(formRef.current)
+    formData.append('access_key', '2128e0e9-2e52-4853-8a0f-027460b00718')
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setStatus('success')
+        formRef.current.reset()
+      } else {
+        setErrorMsg(data.message || 'Submission failed. Please try again.')
+        setStatus('error')
+      }
+    } catch {
+      setErrorMsg('Network error. Please check your connection and try again.')
+      setStatus('error')
+    }
+  }
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-white">
@@ -129,122 +160,133 @@ export default function Contact() {
             className="rounded-2xl p-5 sm:p-8"
             style={{ border: '1px solid rgba(11,37,69,0.08)', backgroundColor: '#FAFBFD' }}
           >
-            <form
-              action="https://api.web3forms.com/submit"
-              method="POST"
-              className="space-y-4"
-            >
-              {/* Web3Forms config fields */}
-              <input type="hidden" name="access_key" value="2128e0e9-2e52-4853-8a0f-027460b00718" />
-              <input type="hidden" name="subject" value="New Quote Request - AClean Building Solutions" />
-              <input type="hidden" name="redirect" value="https://www.acleanbuildingsolutions.com" />
-              <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
-
-              {/* Name row — 1 col on mobile, 2 col on sm+ */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="first_name">First Name *</Label>
-                  <input
-                    id="first_name" type="text" name="first_name"
-                    placeholder="Jane" required
-                    className={inputCls} style={inputStyle}
-                    aria-required="true"
-                  />
+            {status === 'success' ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'rgba(23,168,168,0.1)' }}>
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <path d="M5 14l6 6L23 8" stroke="#17A8A8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
-                <div>
-                  <Label htmlFor="last_name">Last Name *</Label>
-                  <input
-                    id="last_name" type="text" name="last_name"
-                    placeholder="Smith" required
-                    className={inputCls} style={inputStyle}
-                    aria-required="true"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="company">Company / Facility *</Label>
-                <input
-                  id="company" type="text" name="company"
-                  placeholder="Acme Medical Group" required
-                  className={inputCls} style={inputStyle}
-                  aria-required="true"
-                />
-              </div>
-
-              {/* Phone + email — 1 col on mobile, 2 col on sm+ */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="phone">Phone *</Label>
-                  <input
-                    id="phone" type="tel" name="phone"
-                    placeholder="(732) 555-0100" required
-                    className={inputCls} style={inputStyle}
-                    aria-required="true"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Business Email *</Label>
-                  <input
-                    id="email" type="email" name="email"
-                    placeholder="jane@company.com" required
-                    className={inputCls} style={inputStyle}
-                    aria-required="true"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="facility_type">Facility Type *</Label>
-                <select
-                  id="facility_type" name="facility_type" required
-                  className={inputCls} style={inputStyle}
-                  aria-required="true"
-                  defaultValue=""
+                <h3 className="text-2xl font-black mb-3" style={{ color: '#0B2545' }}>Message received!</h3>
+                <p className="font-light mb-6" style={{ color: '#64748B' }}>We'll be in touch within 1 business day.</p>
+                <button
+                  onClick={() => setStatus('idle')}
+                  className="text-sm font-semibold underline"
+                  style={{ color: '#17A8A8' }}
                 >
-                  <option value="" disabled>Select facility type...</option>
-                  {facilityTypes.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+                  Submit another request
+                </button>
               </div>
+            ) : (
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+                {/* Botcheck honeypot */}
+                <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
 
-              <div>
-                <Label htmlFor="square_footage">Approximate Square Footage</Label>
-                <select
-                  id="square_footage" name="square_footage"
-                  className={inputCls} style={inputStyle}
-                  defaultValue=""
+                {/* Name row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Label htmlFor="first_name">First Name *</Label>
+                    <input
+                      id="first_name" type="text" name="first_name"
+                      placeholder="Jane" required
+                      className={inputCls} style={inputStyle}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="last_name">Last Name *</Label>
+                    <input
+                      id="last_name" type="text" name="last_name"
+                      placeholder="Smith" required
+                      className={inputCls} style={inputStyle}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="company">Company / Facility *</Label>
+                  <input
+                    id="company" type="text" name="company"
+                    placeholder="Acme Medical Group" required
+                    className={inputCls} style={inputStyle}
+                  />
+                </div>
+
+                {/* Phone + email */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Label htmlFor="phone">Phone *</Label>
+                    <input
+                      id="phone" type="tel" name="phone"
+                      placeholder="(732) 555-0100" required
+                      className={inputCls} style={inputStyle}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Business Email *</Label>
+                    <input
+                      id="email" type="email" name="email"
+                      placeholder="jane@company.com" required
+                      className={inputCls} style={inputStyle}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="facility_type">Facility Type *</Label>
+                  <select
+                    id="facility_type" name="facility_type" required
+                    className={inputCls} style={inputStyle}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Select facility type...</option>
+                    {facilityTypes.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="square_footage">Approximate Square Footage</Label>
+                  <select
+                    id="square_footage" name="square_footage"
+                    className={inputCls} style={inputStyle}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Select range...</option>
+                    {sqFtRanges.map((r) => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="message">Notes / Needs</Label>
+                  <textarea
+                    id="message" name="message"
+                    placeholder="Describe your cleaning needs or frequency requirements..."
+                    rows={4} className={inputCls}
+                    style={{ ...inputStyle, resize: 'none' }}
+                  />
+                </div>
+
+                {status === 'error' && (
+                  <p className="text-sm text-red-500 text-center" role="alert">{errorMsg}</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  className="w-full py-4 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110 disabled:opacity-60"
+                  style={{ backgroundColor: '#17A8A8', minHeight: 52 }}
                 >
-                  <option value="" disabled>Select range...</option>
-                  {sqFtRanges.map((r) => (
-                    <option key={r} value={r}>{r}</option>
-                  ))}
-                </select>
-              </div>
+                  {status === 'submitting' ? 'Sending...' : 'Submit Quote Request'}
+                </button>
 
-              <div>
-                <Label htmlFor="message">Notes / Needs</Label>
-                <textarea
-                  id="message" name="message"
-                  placeholder="Describe your cleaning needs or frequency requirements..."
-                  rows={4} className={inputCls}
-                  style={{ ...inputStyle, resize: 'none' }}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-4 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110"
-                style={{ backgroundColor: '#17A8A8', minHeight: 52 }}
-              >
-                Submit Quote Request
-              </button>
-
-              <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
-                We respond within 1 business day · Commercial facilities only
-              </p>
-            </form>
+                <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
+                  We respond within 1 business day · Commercial facilities only
+                </p>
+              </form>
+            )}
           </motion.div>
         </div>
       </div>
