@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 
 const facilityTypes = [
@@ -21,20 +21,15 @@ const inputStyle = {
   border: '1px solid rgba(11,37,69,0.12)',
   color: '#0B2545',
 }
-const inputErrStyle = {
-  backgroundColor: '#FEF2F2',
-  border: '1px solid #FCA5A5',
-  color: '#0B2545',
-}
 const inputCls =
   'w-full px-4 py-3 rounded-xl text-sm font-light focus:outline-none focus:ring-2 transition-all duration-200'
 
-function Label({ children, error, htmlFor }) {
+function Label({ children, htmlFor }) {
   return (
     <label
       htmlFor={htmlFor}
       className="block text-xs font-semibold tracking-widest uppercase mb-1.5"
-      style={{ color: error ? '#EF4444' : '#64748B' }}
+      style={{ color: '#64748B' }}
     >
       {children}
     </label>
@@ -44,42 +39,6 @@ function Label({ children, error, htmlFor }) {
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
-
-  const [status, setStatus] = useState('idle')
-  const [errors, setErrors] = useState({})
-  const [form, setForm] = useState({
-    firstName: '', lastName: '', company: '', phone: '',
-    email: '', facilityType: '', sqFt: '', message: '',
-  })
-
-  const validate = () => {
-    const e = {}
-    if (!form.firstName.trim()) e.firstName = 'Required'
-    if (!form.lastName.trim()) e.lastName = 'Required'
-    if (!form.company.trim()) e.company = 'Required'
-    if (!form.phone.trim()) e.phone = 'Required'
-    if (!form.email.trim()) e.email = 'Required'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email'
-    if (!form.facilityType) e.facilityType = 'Please select one'
-    return e
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm((p) => ({ ...p, [name]: value }))
-    if (errors[name]) setErrors((p) => ({ ...p, [name]: undefined }))
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const errs = validate()
-    if (Object.keys(errs).length > 0) { setErrors(errs); return }
-    setStatus('submitting')
-    await new Promise((r) => setTimeout(r, 1500))
-    setStatus('success')
-  }
-
-  const si = (field) => (errors[field] ? inputErrStyle : inputStyle)
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-white">
@@ -170,131 +129,124 @@ export default function Contact() {
             className="rounded-2xl p-5 sm:p-8"
             style={{ border: '1px solid rgba(11,37,69,0.08)', backgroundColor: '#FAFBFD' }}
           >
-            {status === 'success' ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'rgba(23,168,168,0.1)' }}>
-                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <path d="M5 14l6 6L23 8" stroke="#17A8A8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-black mb-3" style={{ color: '#0B2545' }}>Message received!</h3>
-                <p className="font-light" style={{ color: '#64748B' }}>We'll be in touch within 1 business day.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            <form
+              action="https://formsubmit.co/sales@acleanbuildingsolutions.com"
+              method="POST"
+              className="space-y-4"
+            >
+              {/* Formsubmit.co config fields */}
+              <input type="hidden" name="_subject" value="New Quote Request - AClean Building Solutions" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_next" value="https://www.acleanbuildingsolutions.com" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_autoresponse" value="Thank you for contacting AClean Building Solutions! We received your quote request and will respond within 1 business day. - AClean Building Solutions Team" />
+              <input type="text" name="_honey" style={{ display: 'none' }} />
 
-                {/* Name row — 1 col on mobile, 2 col on sm+ */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <Label error={errors.firstName} htmlFor="firstName">First Name *</Label>
-                    <input
-                      id="firstName" type="text" name="firstName" value={form.firstName}
-                      onChange={handleChange} placeholder="Jane"
-                      className={inputCls} style={si('firstName')}
-                      aria-required="true" aria-invalid={!!errors.firstName}
-                    />
-                    {errors.firstName && <p className="text-xs text-red-500 mt-1" role="alert">{errors.firstName}</p>}
-                  </div>
-                  <div>
-                    <Label error={errors.lastName} htmlFor="lastName">Last Name *</Label>
-                    <input
-                      id="lastName" type="text" name="lastName" value={form.lastName}
-                      onChange={handleChange} placeholder="Smith"
-                      className={inputCls} style={si('lastName')}
-                      aria-required="true" aria-invalid={!!errors.lastName}
-                    />
-                    {errors.lastName && <p className="text-xs text-red-500 mt-1" role="alert">{errors.lastName}</p>}
-                  </div>
-                </div>
-
+              {/* Name row — 1 col on mobile, 2 col on sm+ */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <Label error={errors.company} htmlFor="company">Company / Facility *</Label>
+                  <Label htmlFor="first_name">First Name *</Label>
                   <input
-                    id="company" type="text" name="company" value={form.company}
-                    onChange={handleChange} placeholder="Acme Medical Group"
-                    className={inputCls} style={si('company')}
-                    aria-required="true" aria-invalid={!!errors.company}
-                  />
-                  {errors.company && <p className="text-xs text-red-500 mt-1" role="alert">{errors.company}</p>}
-                </div>
-
-                {/* Phone + email — 1 col on mobile, 2 col on sm+ */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <Label error={errors.phone} htmlFor="phone">Phone *</Label>
-                    <input
-                      id="phone" type="tel" name="phone" value={form.phone}
-                      onChange={handleChange} placeholder="(732) 555-0100"
-                      className={inputCls} style={si('phone')}
-                      aria-required="true" aria-invalid={!!errors.phone}
-                    />
-                    {errors.phone && <p className="text-xs text-red-500 mt-1" role="alert">{errors.phone}</p>}
-                  </div>
-                  <div>
-                    <Label error={errors.email} htmlFor="email">Business Email *</Label>
-                    <input
-                      id="email" type="email" name="email" value={form.email}
-                      onChange={handleChange} placeholder="jane@company.com"
-                      className={inputCls} style={si('email')}
-                      aria-required="true" aria-invalid={!!errors.email}
-                    />
-                    {errors.email && <p className="text-xs text-red-500 mt-1" role="alert">{errors.email}</p>}
-                  </div>
-                </div>
-
-                <div>
-                  <Label error={errors.facilityType} htmlFor="facilityType">Facility Type *</Label>
-                  <select
-                    id="facilityType" name="facilityType" value={form.facilityType}
-                    onChange={handleChange} className={inputCls} style={si('facilityType')}
-                    aria-required="true" aria-invalid={!!errors.facilityType}
-                  >
-                    <option value="" disabled>Select facility type...</option>
-                    {facilityTypes.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  {errors.facilityType && <p className="text-xs text-red-500 mt-1" role="alert">{errors.facilityType}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="sqFt">Approximate Square Footage</Label>
-                  <select
-                    id="sqFt" name="sqFt" value={form.sqFt}
-                    onChange={handleChange} className={inputCls} style={inputStyle}
-                  >
-                    <option value="" disabled>Select range...</option>
-                    {sqFtRanges.map((r) => (
-                      <option key={r} value={r}>{r}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <Label htmlFor="message">Notes / Needs</Label>
-                  <textarea
-                    id="message" name="message" value={form.message}
-                    onChange={handleChange}
-                    placeholder="Describe your cleaning needs or frequency requirements..."
-                    rows={4} className={inputCls}
-                    style={{ ...inputStyle, resize: 'none' }}
+                    id="first_name" type="text" name="first_name"
+                    placeholder="Jane" required
+                    className={inputCls} style={inputStyle}
+                    aria-required="true"
                   />
                 </div>
+                <div>
+                  <Label htmlFor="last_name">Last Name *</Label>
+                  <input
+                    id="last_name" type="text" name="last_name"
+                    placeholder="Smith" required
+                    className={inputCls} style={inputStyle}
+                    aria-required="true"
+                  />
+                </div>
+              </div>
 
-                <button
-                  type="submit"
-                  disabled={status === 'submitting'}
-                  className="w-full py-4 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110 disabled:opacity-60"
-                  style={{ backgroundColor: '#17A8A8', minHeight: 52 }}
+              <div>
+                <Label htmlFor="company">Company / Facility *</Label>
+                <input
+                  id="company" type="text" name="company"
+                  placeholder="Acme Medical Group" required
+                  className={inputCls} style={inputStyle}
+                  aria-required="true"
+                />
+              </div>
+
+              {/* Phone + email — 1 col on mobile, 2 col on sm+ */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="phone">Phone *</Label>
+                  <input
+                    id="phone" type="tel" name="phone"
+                    placeholder="(732) 555-0100" required
+                    className={inputCls} style={inputStyle}
+                    aria-required="true"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Business Email *</Label>
+                  <input
+                    id="email" type="email" name="email"
+                    placeholder="jane@company.com" required
+                    className={inputCls} style={inputStyle}
+                    aria-required="true"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="facility_type">Facility Type *</Label>
+                <select
+                  id="facility_type" name="facility_type" required
+                  className={inputCls} style={inputStyle}
+                  aria-required="true"
+                  defaultValue=""
                 >
-                  {status === 'submitting' ? 'Sending...' : 'Submit Quote Request'}
-                </button>
+                  <option value="" disabled>Select facility type...</option>
+                  {facilityTypes.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
 
-                <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
-                  We respond within 1 business day · Commercial facilities only
-                </p>
-              </form>
-            )}
+              <div>
+                <Label htmlFor="square_footage">Approximate Square Footage</Label>
+                <select
+                  id="square_footage" name="square_footage"
+                  className={inputCls} style={inputStyle}
+                  defaultValue=""
+                >
+                  <option value="" disabled>Select range...</option>
+                  {sqFtRanges.map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Label htmlFor="message">Notes / Needs</Label>
+                <textarea
+                  id="message" name="message"
+                  placeholder="Describe your cleaning needs or frequency requirements..."
+                  rows={4} className={inputCls}
+                  style={{ ...inputStyle, resize: 'none' }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-4 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110"
+                style={{ backgroundColor: '#17A8A8', minHeight: 52 }}
+              >
+                Submit Quote Request
+              </button>
+
+              <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
+                We respond within 1 business day · Commercial facilities only
+              </p>
+            </form>
           </motion.div>
         </div>
       </div>
