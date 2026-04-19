@@ -48,25 +48,31 @@ export default function Contact() {
     setStatus('submitting')
     setErrorMsg('')
 
-    const formData = new FormData(formRef.current)
-    formData.append('access_key', '2128e0e9-2e52-4853-8a0f-027460b00718')
+    const raw = new FormData(formRef.current)
+    const payload = {
+      access_key: '2128e0e9-2e52-4853-8a0f-027460b00718',
+      subject: 'New Quote Request - AClean Building Solutions',
+      from_name: 'AClean Website',
+    }
+    raw.forEach((value, key) => { payload[key] = value })
 
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
       })
       const data = await response.json()
 
-      if (response.ok && data.success) {
+      if (data.success) {
         setStatus('success')
         formRef.current.reset()
       } else {
-        setErrorMsg(data.message || 'Submission failed. Please try again.')
+        setErrorMsg(`Error: ${data.message}`)
         setStatus('error')
       }
-    } catch {
-      setErrorMsg('Network error. Please check your connection and try again.')
+    } catch (err) {
+      setErrorMsg(`Network error: ${err.message}`)
       setStatus('error')
     }
   }
@@ -270,7 +276,9 @@ export default function Contact() {
                 </div>
 
                 {status === 'error' && (
-                  <p className="text-sm text-red-500 text-center" role="alert">{errorMsg}</p>
+                  <div className="p-4 rounded-xl text-sm text-red-700 text-center" style={{ backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5' }} role="alert">
+                    {errorMsg}
+                  </div>
                 )}
 
                 <button
