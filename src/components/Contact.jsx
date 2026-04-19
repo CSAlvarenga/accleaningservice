@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react'
+import { useRef } from 'react'
+import { useForm, ValidationError } from '@formspree/react'
 import { motion, useInView } from 'motion/react'
 
 const facilityTypes = [
@@ -38,44 +39,8 @@ function Label({ children, htmlFor }) {
 
 export default function Contact() {
   const ref = useRef(null)
-  const formRef = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
-  const [status, setStatus] = useState('idle') // idle | submitting | success | error
-  const [errorMsg, setErrorMsg] = useState('')
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus('submitting')
-    setErrorMsg('')
-
-    const raw = new FormData(formRef.current)
-    const payload = {
-      access_key: '2128e0e9-2e52-4853-8a0f-027460b00718',
-      subject: 'New Quote Request - AClean Building Solutions',
-      from_name: 'AClean Website',
-    }
-    raw.forEach((value, key) => { payload[key] = value })
-
-    try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      const data = await response.json()
-
-      if (data.success) {
-        setStatus('success')
-        formRef.current.reset()
-      } else {
-        setErrorMsg(`Error: ${data.message}`)
-        setStatus('error')
-      }
-    } catch (err) {
-      setErrorMsg(`Network error: ${err.message}`)
-      setStatus('error')
-    }
-  }
+  const [state, handleSubmit] = useForm('mqewlpgb')
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-white">
@@ -166,7 +131,7 @@ export default function Contact() {
             className="rounded-2xl p-5 sm:p-8"
             style={{ border: '1px solid rgba(11,37,69,0.08)', backgroundColor: '#FAFBFD' }}
           >
-            {status === 'success' ? (
+            {state.succeeded ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'rgba(23,168,168,0.1)' }}>
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -174,19 +139,10 @@ export default function Contact() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-black mb-3" style={{ color: '#0B2545' }}>Message received!</h3>
-                <p className="font-light mb-6" style={{ color: '#64748B' }}>We'll be in touch within 1 business day.</p>
-                <button
-                  onClick={() => setStatus('idle')}
-                  className="text-sm font-semibold underline"
-                  style={{ color: '#17A8A8' }}
-                >
-                  Submit another request
-                </button>
+                <p className="font-light" style={{ color: '#64748B' }}>We'll be in touch within 1 business day.</p>
               </div>
             ) : (
-              <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-                {/* Botcheck honeypot */}
-                <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
+              <form onSubmit={handleSubmit} className="space-y-4">
 
                 {/* Name row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -197,6 +153,7 @@ export default function Contact() {
                       placeholder="Jane" required
                       className={inputCls} style={inputStyle}
                     />
+                    <ValidationError field="first_name" errors={state.errors} className="text-xs text-red-500 mt-1" />
                   </div>
                   <div>
                     <Label htmlFor="last_name">Last Name *</Label>
@@ -205,6 +162,7 @@ export default function Contact() {
                       placeholder="Smith" required
                       className={inputCls} style={inputStyle}
                     />
+                    <ValidationError field="last_name" errors={state.errors} className="text-xs text-red-500 mt-1" />
                   </div>
                 </div>
 
@@ -215,6 +173,7 @@ export default function Contact() {
                     placeholder="Acme Medical Group" required
                     className={inputCls} style={inputStyle}
                   />
+                  <ValidationError field="company" errors={state.errors} className="text-xs text-red-500 mt-1" />
                 </div>
 
                 {/* Phone + email */}
@@ -226,6 +185,7 @@ export default function Contact() {
                       placeholder="(732) 555-0100" required
                       className={inputCls} style={inputStyle}
                     />
+                    <ValidationError field="phone" errors={state.errors} className="text-xs text-red-500 mt-1" />
                   </div>
                   <div>
                     <Label htmlFor="email">Business Email *</Label>
@@ -234,6 +194,7 @@ export default function Contact() {
                       placeholder="jane@company.com" required
                       className={inputCls} style={inputStyle}
                     />
+                    <ValidationError field="email" errors={state.errors} className="text-xs text-red-500 mt-1" />
                   </div>
                 </div>
 
@@ -249,6 +210,7 @@ export default function Contact() {
                       <option key={t} value={t}>{t}</option>
                     ))}
                   </select>
+                  <ValidationError field="facility_type" errors={state.errors} className="text-xs text-red-500 mt-1" />
                 </div>
 
                 <div>
@@ -273,21 +235,18 @@ export default function Contact() {
                     rows={4} className={inputCls}
                     style={{ ...inputStyle, resize: 'none' }}
                   />
+                  <ValidationError field="message" errors={state.errors} className="text-xs text-red-500 mt-1" />
                 </div>
 
-                {status === 'error' && (
-                  <div className="p-4 rounded-xl text-sm text-red-700 text-center" style={{ backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5' }} role="alert">
-                    {errorMsg}
-                  </div>
-                )}
+                <ValidationError errors={state.errors} className="text-sm text-red-500 text-center" />
 
                 <button
                   type="submit"
-                  disabled={status === 'submitting'}
+                  disabled={state.submitting}
                   className="w-full py-4 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110 disabled:opacity-60"
                   style={{ backgroundColor: '#17A8A8', minHeight: 52 }}
                 >
-                  {status === 'submitting' ? 'Sending...' : 'Submit Quote Request'}
+                  {state.submitting ? 'Sending...' : 'Submit Quote Request'}
                 </button>
 
                 <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
