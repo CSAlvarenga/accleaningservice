@@ -130,17 +130,15 @@ export default function Contact() {
             style={{ border: '1px solid rgba(11,37,69,0.08)', backgroundColor: '#FAFBFD' }}
           >
             <form
-              action="https://formsubmit.co/csantosalvarenga@gmail.com"
+              action="https://api.web3forms.com/submit"
               method="POST"
               className="space-y-4"
             >
-              {/* Formsubmit.co config fields */}
-              <input type="hidden" name="_subject" value="New Quote Request - AClean Building Solutions" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_next" value="https://www.acleanbuildingsolutions.com" />
-              <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="_autoresponse" value="Thank you for contacting AClean Building Solutions! We received your quote request and will respond within 1 business day. - AClean Building Solutions Team" />
-              <input type="text" name="_honey" style={{ display: 'none' }} />
+              {/* Web3Forms config fields */}
+              <input type="hidden" name="access_key" value="2128e0e9-2e52-4853-8a0f-027460b00718" />
+              <input type="hidden" name="subject" value="New Quote Request - AClean Building Solutions" />
+              <input type="hidden" name="redirect" value="https://www.acleanbuildingsolutions.com" />
+              <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
 
               {/* Name row — 1 col on mobile, 2 col on sm+ */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
