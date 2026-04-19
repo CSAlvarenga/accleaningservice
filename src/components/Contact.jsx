@@ -106,6 +106,25 @@ export default function Contact() {
                   sub: 'Commercial facilities only',
                 },
               ].map(({ icon, label, sub, href }) => {
+                const isWhatsApp = href && href.includes('wa.me')
+                if (isWhatsApp) {
+                  return (
+                    <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-4 p-4 rounded-xl transition-all duration-150 hover:brightness-110"
+                      style={{ backgroundColor: '#25D366', border: '1px solid #25D366' }}
+                    >
+                      <div className="flex-shrink-0 p-2.5 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                          <path d="M9 1.5C4.86 1.5 1.5 4.86 1.5 9c0 1.32.36 2.58.99 3.66L1.5 16.5l3.96-1.02A7.46 7.46 0 009 16.5c4.14 0 7.5-3.36 7.5-7.5S13.14 1.5 9 1.5zm3.69 10.35c-.15.42-.87.81-1.2.84-.33.03-.63.15-2.13-.45-1.8-.72-2.97-2.55-3.06-2.67-.09-.12-.75-1-.75-1.92s.48-1.35.66-1.53c.18-.18.39-.21.51-.21h.36c.12 0 .27-.03.42.33.15.36.51 1.26.57 1.35.06.09.09.21.03.33-.06.12-.09.18-.18.3-.09.12-.18.21-.27.33-.09.09-.18.21-.09.39.09.18.42.69.9 1.11.63.54 1.14.72 1.32.81.18.09.27.06.39-.06.12-.12.48-.57.6-.75.12-.18.24-.15.39-.09.15.06 1.02.48 1.2.57.18.09.3.12.33.18.06.18.06.6-.09 1.02z" fill="white" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold" style={{ color: 'white' }}>{label}</div>
+                        <div className="text-xs mt-0.5 font-light" style={{ color: 'rgba(255,255,255,0.8)' }}>{sub}</div>
+                      </div>
+                    </a>
+                  )
+                }
                 const inner = (
                   <>
                     <div className="flex-shrink-0 p-2.5 rounded-xl" style={{ backgroundColor: 'rgba(23,168,168,0.08)' }}>
@@ -121,7 +140,7 @@ export default function Contact() {
                 const borderStyle = { border: '1px solid rgba(11,37,69,0.08)' }
                 return href ? (
                   <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                    className={cls + ' hover:border-[#17A8A8]'} style={borderStyle}>
+                    className={cls} style={borderStyle}>
                     {inner}
                   </a>
                 ) : (
@@ -144,8 +163,6 @@ export default function Contact() {
               method="POST"
               className="space-y-4"
             >
-              {/* Redirect back after submit */}
-              <input type="hidden" name="_next" value="https://www.acleanbuildingsolutions.com" />
               <input type="hidden" name="_subject" value="New Quote Request - AClean Building Solutions" />
 
               {/* Name row */}
