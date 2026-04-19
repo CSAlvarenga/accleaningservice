@@ -130,7 +130,7 @@ export default function Contact() {
             style={{ border: '1px solid rgba(11,37,69,0.08)', backgroundColor: '#FAFBFD' }}
           >
             <form
-              action="https://formsubmit.co/sales@acleanbuildingsolutions.com"
+              action="https://formsubmit.co/csantosalvarenga@gmail.com"
               method="POST"
               className="space-y-4"
             >
