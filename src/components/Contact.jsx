@@ -105,7 +105,7 @@ export default function Contact() {
                     </svg>
                   ),
                   label: 'Response within 1 business day',
-                  sub: 'Commercial facilities only',
+                  sub: 'We reply to every request',
                 },
               ].map(({ icon, label, sub, href }) => {
                 const isWhatsApp = href && href.includes('wa.me')
@@ -235,7 +235,7 @@ export default function Contact() {
               </button>
 
               <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
-                We respond within 1 business day · Commercial facilities only
+                We respond within 1 business day
               </p>
             </form>
             )}
