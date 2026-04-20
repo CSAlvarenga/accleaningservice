@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useForm, ValidationError } from '@formspree/react'
 import { motion, useInView } from 'motion/react'
 
 const facilityTypes = [
@@ -39,6 +40,7 @@ function Label({ children, htmlFor }) {
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
+  const [state, handleSubmit] = useForm('mqewlpgb')
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-white">
@@ -150,7 +152,7 @@ export default function Contact() {
             </div>
           </motion.div>
 
-          {/* Right: form — native POST to Formspree */}
+          {/* Right: form */}
           <motion.div
             initial={{ opacity: 0, x: 28 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 28 }}
@@ -158,12 +160,18 @@ export default function Contact() {
             className="rounded-2xl p-5 sm:p-8"
             style={{ border: '1px solid rgba(11,37,69,0.08)', backgroundColor: '#FAFBFD' }}
           >
-            <form
-              action="https://formspree.io/f/mqewlpgb"
-              method="POST"
-              className="space-y-4"
-            >
-              <input type="hidden" name="_subject" value="New Quote Request - AClean Building Solutions" />
+            {state.succeeded ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'rgba(23,168,168,0.1)' }}>
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <path d="M5 14l6 6L23 8" stroke="#17A8A8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-black mb-3" style={{ color: '#0B2545' }}>Message received!</h3>
+                <p className="font-light" style={{ color: '#64748B' }}>We'll be in touch within 1 business day.</p>
+              </div>
+            ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
 
               {/* Name row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -215,18 +223,22 @@ export default function Contact() {
                 <textarea id="message" name="message" placeholder="Describe your cleaning needs or frequency requirements..." rows={4} className={inputCls} style={{ ...inputStyle, resize: 'none' }} />
               </div>
 
+              <ValidationError errors={state.errors} className="text-sm text-red-500 text-center" />
+
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110"
+                disabled={state.submitting}
+                className="w-full py-4 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110 disabled:opacity-60"
                 style={{ backgroundColor: '#17A8A8', minHeight: 52 }}
               >
-                Submit Quote Request
+                {state.submitting ? 'Sending...' : 'Submit Quote Request'}
               </button>
 
               <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
                 We respond within 1 business day · Commercial facilities only
               </p>
             </form>
+            )}
           </motion.div>
         </div>
       </div>
