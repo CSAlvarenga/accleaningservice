@@ -89,7 +89,7 @@ export default function Footer() {
           style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}
         >
           <p className="text-xs font-light text-center sm:text-left" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            &copy; {new Date().getFullYear()} AClean Building Solutions LLC. All rights reserved.
+            &copy; 2026 A C Cleaning Services LLC. All rights reserved. AClean Building Solutions is a DBA of A C Cleaning Services LLC.
           </p>
           <p className="text-xs font-light" style={{ color: 'rgba(255,255,255,0.25)' }}>
             Licensed · Insured · Woman-Owned
