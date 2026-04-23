@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 
+const EXPO = [0.16, 1, 0.3, 1]
+
 const MedicalIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
     <rect x="2" y="6" width="20" height="15" rx="2" stroke="#17A8A8" strokeWidth="1.5" />
@@ -67,9 +69,9 @@ export default function Industries() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 28 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ duration: 0.6, ease: EXPO }}
           className="text-center mb-10 sm:mb-16"
         >
           <span className="inline-block text-xs font-semibold tracking-[0.18em] uppercase mb-3" style={{ color: '#17A8A8' }}>
@@ -88,9 +90,9 @@ export default function Industries() {
           {industries.map(({ Icon, title, description }, i) => (
             <motion.div
               key={title}
-              initial={{ opacity: 0, y: 36, scale: 0.97 }}
-              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 36, scale: 0.97 }}
-              transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
+              initial={{ opacity: 0, y: 32 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+              transition={{ duration: 0.6, ease: EXPO, delay: i * 0.08 }}
               className="group bg-white p-5 sm:p-7 rounded-2xl"
               style={{ border: '1px solid rgba(11,37,69,0.08)', transition: 'border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease' }}
               whileHover={{

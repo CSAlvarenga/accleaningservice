@@ -2,6 +2,8 @@ import { useRef } from 'react'
 import { useForm, ValidationError } from '@formspree/react'
 import { motion, useInView } from 'motion/react'
 
+const EXPO = [0.16, 1, 0.3, 1]
+
 const facilityTypes = [
   'Medical Office / Clinic',
   'Daycare / School',
@@ -37,6 +39,45 @@ function Label({ children, htmlFor }) {
   )
 }
 
+const contactItems = [
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="1.5" y="3.5" width="15" height="11" rx="2" stroke="#17A8A8" strokeWidth="1.4" />
+        <path d="M1.5 7.5l7.5 4.5 7.5-4.5" stroke="#17A8A8" strokeWidth="1.4" />
+      </svg>
+    ),
+    label: 'sales@acleanbuildingsolutions.com',
+    sub: 'Direct to our team',
+    href: 'mailto:sales@acleanbuildingsolutions.com',
+  },
+  {
+    icon: null,
+    label: '+1 (732) 430-5494',
+    sub: 'Message us on WhatsApp',
+    href: 'https://wa.me/17324305494',
+  },
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 16.5S2.25 10.63 2.25 7.5a6.75 6.75 0 0113.5 0c0 3.13-6.75 9-6.75 9z" stroke="#17A8A8" strokeWidth="1.4" />
+        <circle cx="9" cy="7.5" r="2.25" stroke="#17A8A8" strokeWidth="1.4" />
+      </svg>
+    ),
+    label: 'South River, NJ',
+    sub: 'Serving NJ · NY · PA',
+  },
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 1.5l2.16 5.76h5.34L12 10.44l1.8 5.56L9 12.66 4.2 16l1.8-5.56-4.5-3.18h5.34L9 1.5z" stroke="#17A8A8" strokeWidth="1.3" strokeLinejoin="round" />
+      </svg>
+    ),
+    label: 'Response within 1 business day',
+    sub: 'We reply to every request',
+  },
+]
+
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
@@ -48,85 +89,29 @@ export default function Contact() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
           {/* Left: info */}
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: 28 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-block text-xs font-semibold tracking-[0.22em] uppercase mb-3" style={{ color: '#17A8A8' }}>
-              Get a Quote
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black mb-5 leading-tight tracking-tight" style={{ color: '#0B2545' }}>
-              Request a free quote
-            </h2>
-            <p className="text-sm sm:text-base md:text-lg leading-relaxed font-light mb-6 sm:mb-8" style={{ color: '#64748B' }}>
-              Tell us about your facility and what you need. We review every submission and respond
-              within 1 business day.
-            </p>
+          <div ref={ref}>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+              transition={{ duration: 0.6, ease: EXPO }}
+            >
+              <span className="inline-block text-xs font-semibold tracking-[0.22em] uppercase mb-3" style={{ color: '#17A8A8' }}>
+                Get a Quote
+              </span>
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-black mb-5 leading-tight tracking-tight" style={{ color: '#0B2545' }}>
+                Request a free quote
+              </h2>
+              <p className="text-sm sm:text-base md:text-lg leading-relaxed font-light mb-6 sm:mb-8" style={{ color: '#64748B' }}>
+                Tell us about your facility and what you need. We review every submission and respond
+                within 1 business day.
+              </p>
+            </motion.div>
 
             <div className="space-y-4">
-              {[
-                {
-                  icon: (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                      <rect x="1.5" y="3.5" width="15" height="11" rx="2" stroke="#17A8A8" strokeWidth="1.4" />
-                      <path d="M1.5 7.5l7.5 4.5 7.5-4.5" stroke="#17A8A8" strokeWidth="1.4" />
-                    </svg>
-                  ),
-                  label: 'sales@acleanbuildingsolutions.com',
-                  sub: 'Direct to our team',
-                  href: 'mailto:sales@acleanbuildingsolutions.com',
-                },
-                {
-                  icon: (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                      <path d="M9 1.5C4.86 1.5 1.5 4.86 1.5 9c0 1.32.36 2.58.99 3.66L1.5 16.5l3.96-1.02A7.46 7.46 0 009 16.5c4.14 0 7.5-3.36 7.5-7.5S13.14 1.5 9 1.5zm3.69 10.35c-.15.42-.87.81-1.2.84-.33.03-.63.15-2.13-.45-1.8-.72-2.97-2.55-3.06-2.67-.09-.12-.75-1-.75-1.92s.48-1.35.66-1.53c.18-.18.39-.21.51-.21h.36c.12 0 .27-.03.42.33.15.36.51 1.26.57 1.35.06.09.09.21.03.33-.06.12-.09.18-.18.3-.09.12-.18.21-.27.33-.09.09-.18.21-.09.39.09.18.42.69.9 1.11.63.54 1.14.72 1.32.81.18.09.27.06.39-.06.12-.12.48-.57.6-.75.12-.18.24-.15.39-.09.15.06 1.02.48 1.2.57.18.09.3.12.33.18.06.18.06.6-.09 1.02z" fill="#17A8A8" />
-                    </svg>
-                  ),
-                  label: '+1 (732) 430-5494',
-                  sub: 'Message us on WhatsApp',
-                  href: 'https://wa.me/17324305494',
-                },
-                {
-                  icon: (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                      <path d="M9 16.5S2.25 10.63 2.25 7.5a6.75 6.75 0 0113.5 0c0 3.13-6.75 9-6.75 9z" stroke="#17A8A8" strokeWidth="1.4" />
-                      <circle cx="9" cy="7.5" r="2.25" stroke="#17A8A8" strokeWidth="1.4" />
-                    </svg>
-                  ),
-                  label: 'South River, NJ',
-                  sub: 'Serving NJ · NY · PA',
-                },
-                {
-                  icon: (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                      <path d="M9 1.5l2.16 5.76h5.34L12 10.44l1.8 5.56L9 12.66 4.2 16l1.8-5.56-4.5-3.18h5.34L9 1.5z" stroke="#17A8A8" strokeWidth="1.3" strokeLinejoin="round" />
-                    </svg>
-                  ),
-                  label: 'Response within 1 business day',
-                  sub: 'We reply to every request',
-                },
-              ].map(({ icon, label, sub, href }) => {
+              {contactItems.map(({ icon, label, sub, href }, i) => {
                 const isWhatsApp = href && href.includes('wa.me')
-                if (isWhatsApp) {
-                  return (
-                    <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 rounded-xl transition-all duration-150 hover:brightness-110"
-                      style={{ backgroundColor: '#25D366', border: '1px solid #25D366' }}
-                    >
-                      <div className="flex-shrink-0 p-2.5 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                          <path d="M9 1.5C4.86 1.5 1.5 4.86 1.5 9c0 1.32.36 2.58.99 3.66L1.5 16.5l3.96-1.02A7.46 7.46 0 009 16.5c4.14 0 7.5-3.36 7.5-7.5S13.14 1.5 9 1.5zm3.69 10.35c-.15.42-.87.81-1.2.84-.33.03-.63.15-2.13-.45-1.8-.72-2.97-2.55-3.06-2.67-.09-.12-.75-1-.75-1.92s.48-1.35.66-1.53c.18-.18.39-.21.51-.21h.36c.12 0 .27-.03.42.33.15.36.51 1.26.57 1.35.06.09.09.21.03.33-.06.12-.09.18-.18.3-.09.12-.18.21-.27.33-.09.09-.18.21-.09.39.09.18.42.69.9 1.11.63.54 1.14.72 1.32.81.18.09.27.06.39-.06.12-.12.48-.57.6-.75.12-.18.24-.15.39-.09.15.06 1.02.48 1.2.57.18.09.3.12.33.18.06.18.06.6-.09 1.02z" fill="white" />
-                        </svg>
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold" style={{ color: 'white' }}>{label}</div>
-                        <div className="text-xs mt-0.5 font-light" style={{ color: 'rgba(255,255,255,0.8)' }}>{sub}</div>
-                      </div>
-                    </a>
-                  )
-                }
+                const cls = 'flex items-center gap-4 p-4 rounded-xl bg-white transition-colors duration-150'
+                const borderStyle = { border: '1px solid rgba(11,37,69,0.08)' }
                 const inner = (
                   <>
                     <div className="flex-shrink-0 p-2.5 rounded-xl" style={{ backgroundColor: 'rgba(23,168,168,0.08)' }}>
@@ -138,25 +123,46 @@ export default function Contact() {
                     </div>
                   </>
                 )
-                const cls = 'flex items-center gap-4 p-4 rounded-xl bg-white transition-colors duration-150'
-                const borderStyle = { border: '1px solid rgba(11,37,69,0.08)' }
-                return href ? (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                    className={cls} style={borderStyle}>
-                    {inner}
-                  </a>
-                ) : (
-                  <div key={label} className={cls} style={borderStyle}>{inner}</div>
+                return (
+                  <motion.div
+                    key={label}
+                    initial={{ opacity: 0, y: 32 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+                    transition={{ duration: 0.6, ease: EXPO, delay: i * 0.08 }}
+                  >
+                    {isWhatsApp ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-4 p-4 rounded-xl transition-all duration-150 hover:brightness-110"
+                        style={{ backgroundColor: '#25D366', border: '1px solid #25D366' }}
+                      >
+                        <div className="flex-shrink-0 p-2.5 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M9 1.5C4.86 1.5 1.5 4.86 1.5 9c0 1.32.36 2.58.99 3.66L1.5 16.5l3.96-1.02A7.46 7.46 0 009 16.5c4.14 0 7.5-3.36 7.5-7.5S13.14 1.5 9 1.5zm3.69 10.35c-.15.42-.87.81-1.2.84-.33.03-.63.15-2.13-.45-1.8-.72-2.97-2.55-3.06-2.67-.09-.12-.75-1-.75-1.92s.48-1.35.66-1.53c.18-.18.39-.21.51-.21h.36c.12 0 .27-.03.42.33.15.36.51 1.26.57 1.35.06.09.09.21.03.33-.06.12-.09.18-.18.3-.09.12-.18.21-.27.33-.09.09-.18.21-.09.39.09.18.42.69.9 1.11.63.54 1.14.72 1.32.81.18.09.27.06.39-.06.12-.12.48-.57.6-.75.12-.18.24-.15.39-.09.15.06 1.02.48 1.2.57.18.09.3.12.33.18.06.18.06.6-.09 1.02z" fill="white" />
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold" style={{ color: 'white' }}>{label}</div>
+                          <div className="text-xs mt-0.5 font-light" style={{ color: 'rgba(255,255,255,0.8)' }}>{sub}</div>
+                        </div>
+                      </a>
+                    ) : href ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer" className={cls} style={borderStyle}>
+                        {inner}
+                      </a>
+                    ) : (
+                      <div className={cls} style={borderStyle}>{inner}</div>
+                    )}
+                  </motion.div>
                 )
               })}
             </div>
-          </motion.div>
+          </div>
 
           {/* Right: form */}
           <motion.div
-            initial={{ opacity: 0, x: 28 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 28 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
+            initial={{ opacity: 0, y: 32 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+            transition={{ duration: 0.6, ease: EXPO, delay: 0.08 }}
             className="rounded-2xl p-5 sm:p-8"
             style={{ border: '1px solid rgba(11,37,69,0.08)', backgroundColor: '#FAFBFD' }}
           >

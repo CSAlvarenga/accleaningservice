@@ -1,6 +1,11 @@
 import { useRef } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useCountUp } from '../hooks/useCountUp'
+
+const EXPO = [0.16, 1, 0.3, 1]
+
+const HEADLINE_WORDS = ['Your', 'facility', 'deserves', 'a']
+const HEADLINE_ACCENT = ['higher', 'standard.']
 
 const PARTICLES = [
   { x: '8%',  y: '18%', s: 5, dur: 9,  d: 0,   dx: 12,  dy: 8  },
@@ -57,6 +62,8 @@ const itemVariants = {
 
 export default function Hero() {
   const reduced = useReducedMotion()
+  const { scrollY } = useScroll()
+  const rawImageY = useTransform(scrollY, [0, 600], [0, -80])
 
   return (
     <section
@@ -64,13 +71,34 @@ export default function Hero() {
       className="relative flex flex-col overflow-hidden bg-white"
       style={{ minHeight: 'max(100vh, 100svh)' }}
     >
+      {/* Gradient mesh background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div style={{
+          position: 'absolute', top: '-15%', left: '-8%',
+          width: '55%', height: '65%',
+          background: 'radial-gradient(ellipse at center, rgba(23,168,168,0.07) 0%, transparent 70%)',
+          filter: 'blur(52px)',
+          borderRadius: '50%',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '-10%', right: '-8%',
+          width: '50%', height: '60%',
+          background: 'radial-gradient(ellipse at center, rgba(11,37,69,0.05) 0%, transparent 70%)',
+          filter: 'blur(64px)',
+          borderRadius: '50%',
+        }} />
+        <div style={{
+          position: 'absolute', top: '35%', right: '28%',
+          width: '28%', height: '38%',
+          background: 'radial-gradient(ellipse at center, rgba(23,168,168,0.04) 0%, transparent 70%)',
+          filter: 'blur(44px)',
+          borderRadius: '50%',
+        }} />
+      </div>
+
       {/* Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {PARTICLES.map((p, i) => <Particle key={i} {...p} reduced={reduced} />)}
-        <div
-          className="absolute top-0 right-0 w-1/2 h-1/2 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at top right, rgba(23,168,168,0.05) 0%, transparent 70%)' }}
-        />
       </div>
 
       {/* Main content */}
@@ -80,7 +108,6 @@ export default function Hero() {
           {/* Left: copy */}
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="min-w-0">
             <motion.div variants={itemVariants} className="mb-4">
-              {/* flex + flex-wrap prevents inline overflow on small screens */}
               <div
                 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold tracking-[0.08em] sm:tracking-[0.18em] uppercase"
                 style={{ color: '#17A8A8' }}
@@ -92,13 +119,45 @@ export default function Hero() {
               </div>
             </motion.div>
 
+            {/* Per-word headline reveal — motion.h1 with transparent variant holds stagger position */}
             <motion.h1
-              variants={itemVariants}
+              variants={{ hidden: {}, visible: {} }}
               className="font-black leading-[1.08] mb-5 tracking-tight text-[1.85rem] sm:text-[2.6rem] lg:text-[3.5rem]"
               style={{ color: '#0B2545' }}
             >
-              Your facility deserves a{' '}
-              <span style={{ color: '#17A8A8' }}>higher standard.</span>
+              {HEADLINE_WORDS.map((word, i) => (
+                <motion.span
+                  key={word}
+                  initial={reduced ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={reduced
+                    ? { duration: 0 }
+                    : { duration: 0.55, ease: EXPO, delay: 0.33 + i * 0.07 }
+                  }
+                  style={{ display: 'inline-block', marginRight: '0.28em' }}
+                >
+                  {word}
+                </motion.span>
+              ))}
+              <span style={{ color: '#17A8A8' }}>
+                {HEADLINE_ACCENT.map((word, i) => (
+                  <motion.span
+                    key={word}
+                    initial={reduced ? false : { opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={reduced
+                      ? { duration: 0 }
+                      : { duration: 0.55, ease: EXPO, delay: 0.33 + (HEADLINE_WORDS.length + i) * 0.07 }
+                    }
+                    style={{
+                      display: 'inline-block',
+                      marginRight: i < HEADLINE_ACCENT.length - 1 ? '0.28em' : 0,
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </span>
             </motion.h1>
 
             <motion.p
@@ -111,7 +170,7 @@ export default function Hero() {
               across the tri-state area.
             </motion.p>
 
-            {/* CTAs — stacked full-width on mobile, inline on sm+ */}
+            {/* CTAs */}
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <motion.a
                 href="#contact"
@@ -141,7 +200,7 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Right: image — hidden on mobile (shown below), visible on lg+ */}
+          {/* Right: image (desktop only) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -156,7 +215,8 @@ export default function Hero() {
                 boxShadow: '0 24px 80px rgba(11,37,69,0.12), 0 4px 24px rgba(23,168,168,0.08)',
               }}
             >
-              <img
+              {/* Parallax image — scaled 1.2× so edges never show during Y movement */}
+              <motion.img
                 src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80"
                 alt="Professional commercial office building maintained by AClean Building Solutions"
                 className="w-full h-full object-cover"
@@ -164,21 +224,31 @@ export default function Hero() {
                 fetchpriority="high"
                 width="1200"
                 height="900"
+                style={{
+                  y: reduced ? 0 : rawImageY,
+                  scale: 1.2,
+                  transformOrigin: 'top center',
+                }}
               />
               <div className="absolute inset-0" style={{ background: 'linear-gradient(140deg, rgba(11,37,69,0.08) 0%, transparent 60%)' }} />
-              <div
+
+              {/* Floating badge */}
+              <motion.div
                 className="absolute bottom-5 left-5 px-4 py-3 rounded-xl bg-white"
                 style={{ boxShadow: '0 4px 20px rgba(11,37,69,0.12)', border: '1px solid rgba(23,168,168,0.15)' }}
+                animate={reduced ? {} : { y: [0, -6, 0] }}
+                transition={{ duration: 3, ease: 'easeInOut', repeat: Infinity }}
               >
                 <div className="font-bold text-sm" style={{ color: '#0B2545' }}>Fully Insured</div>
                 <div className="text-xs mt-0.5" style={{ color: '#17A8A8' }}>Licensed · WBE Certified</div>
-              </div>
+              </motion.div>
             </div>
+
             <div className="absolute -top-4 -right-4 w-20 h-20 rounded-2xl" style={{ backgroundColor: 'rgba(23,168,168,0.1)' }} />
             <div className="absolute -bottom-4 -left-4 w-14 h-14 rounded-xl" style={{ backgroundColor: 'rgba(26,95,168,0.08)' }} />
           </motion.div>
 
-          {/* Mobile-only image — below text, hidden on lg+ */}
+          {/* Mobile image — below text, no parallax */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}

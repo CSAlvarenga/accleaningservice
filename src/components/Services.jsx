@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'motion/react'
 
+const EXPO = [0.16, 1, 0.3, 1]
+
 function scrollToContact(e) {
   e.preventDefault()
   document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
@@ -100,7 +102,7 @@ const services = [
     Icon: WindowIcon,
     title: 'Window Cleaning',
     description: 'Interior and exterior window cleaning for commercial properties of all sizes. Streak-free professional finish.',
-    image: 'https://images.unsplash.com/photo-1527515637462-cff94ebb8301?w=900&q=80',
+    image: 'https://images.pexels.com/photos/5613136/pexels-photo-5613136.jpeg?auto=compress&cs=tinysrgb&w=900',
     duties: [
       'Interior & exterior glass cleaning',
       'Screen removal, cleaning & reinstallation',
@@ -164,7 +166,7 @@ const services = [
     Icon: FloorIcon,
     title: 'Floor Care & Restoration',
     description: 'Strip, wax, buff & polish hard floors. Deep carpet extraction. Restore your floors to like-new condition.',
-    image: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=900&q=80',
+    image: 'https://images.pexels.com/photos/6197106/pexels-photo-6197106.jpeg?auto=compress&cs=tinysrgb&w=900',
     duties: [
       'Stripping old wax & applying fresh commercial-grade coats',
       'High-speed buffing & burnishing for showroom shine',
@@ -180,7 +182,7 @@ const services = [
     Icon: PressureIcon,
     title: 'Pressure Washing',
     description: 'Exterior cleaning for building facades, parking lots, sidewalks, and loading docks. Remove grime, mold, and staining.',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80',
+    image: 'https://images.pexels.com/photos/30958777/pexels-photo-30958777.jpeg?auto=compress&cs=tinysrgb&w=900',
     duties: [
       'Building facades, siding & exterior wall washing',
       'Parking lots, driveways & garage floor cleaning',
@@ -352,9 +354,9 @@ function ServiceCard({ service, index, isInView, onClick }) {
   const { Icon, title, description, image } = service
   return (
     <motion.button
-      initial={{ opacity: 0, y: 32, scale: 0.97 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.97 }}
-      transition={{ duration: 0.5, delay: 0.05 + (index % 4) * 0.08 + Math.floor(index / 4) * 0.12 }}
+      initial={{ opacity: 0, y: 32 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+      transition={{ duration: 0.6, ease: EXPO, delay: index * 0.08 }}
       whileHover={{ y: -4, boxShadow: '0 12px 36px rgba(23,168,168,0.13)', transition: { duration: 0.2 } }}
       onClick={onClick}
       className="group bg-white rounded-2xl flex flex-col text-left w-full overflow-hidden cursor-pointer"
@@ -406,9 +408,9 @@ export default function Services() {
         {/* Heading */}
         <motion.div
           ref={headingRef}
-          initial={{ opacity: 0, y: 28 }}
-          animate={headingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={headingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ duration: 0.6, ease: EXPO }}
           className="text-center mb-14"
         >
           <span className="inline-block text-xs font-semibold tracking-[0.22em] uppercase mb-3" style={{ color: '#17A8A8' }}>
@@ -438,9 +440,9 @@ export default function Services() {
         {/* ── Tech / AI Section ── */}
         <motion.div
           ref={techRef}
-          initial={{ opacity: 0, y: 32 }}
-          animate={techInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={techInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ duration: 0.6, ease: EXPO }}
           className="mt-20 rounded-3xl overflow-hidden"
           style={{ backgroundColor: '#0B2545' }}
         >
@@ -460,9 +462,9 @@ export default function Services() {
             {techTools.map((tool, i) => (
               <motion.div
                 key={tool.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={techInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.5, delay: 0.3 + i * 0.07 }}
+                initial={{ opacity: 0, y: 32 }}
+                animate={techInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+                transition={{ duration: 0.6, ease: EXPO, delay: i * 0.08 }}
                 className="p-5 sm:p-6 flex flex-col gap-3"
                 style={{ backgroundColor: '#0B2545' }}
               >
@@ -486,9 +488,9 @@ export default function Services() {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ duration: 0.6, ease: EXPO }}
           className="mt-14 text-center"
         >
           <a

@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+
+// ─── Portal credentials (change password here) ───────────────────────────────
+const PORTAL_PASSWORD = 'AClean2025!'
+const PORTAL_URL = 'https://invoice-generator.com/app'
 
 const navLinks = [
   { href: '#services', label: 'Services' },
@@ -13,9 +17,142 @@ function scrollTo(href) {
   document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
 }
 
+// ─── Portal Login Modal ───────────────────────────────────────────────────────
+function PortalModal({ onClose }) {
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(false)
+  const [showPw, setShowPw] = useState(false)
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    setTimeout(() => inputRef.current?.focus(), 120)
+  }, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (password === PORTAL_PASSWORD) {
+      window.open(PORTAL_URL, '_blank', 'noopener,noreferrer')
+      onClose()
+    } else {
+      setError(true)
+      setPassword('')
+      setTimeout(() => setError(false), 2000)
+    }
+  }
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[80] flex items-center justify-center p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      style={{ backgroundColor: 'rgba(11,37,69,0.6)', backdropFilter: 'blur(6px)' }}
+    >
+      <motion.div
+        className="w-full max-w-sm bg-white rounded-2xl overflow-hidden"
+        initial={{ scale: 0.92, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.92, opacity: 0, y: 20 }}
+        transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+        onClick={(e) => e.stopPropagation()}
+        style={{ boxShadow: '0 24px 80px rgba(11,37,69,0.2)' }}
+      >
+        {/* Header */}
+        <div className="px-8 pt-8 pb-6 text-center" style={{ borderBottom: '1px solid rgba(11,37,69,0.07)' }}>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'rgba(23,168,168,0.1)' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="11" width="18" height="11" rx="2" stroke="#17A8A8" strokeWidth="1.6" />
+              <path d="M7 11V7a5 5 0 0110 0v4" stroke="#17A8A8" strokeWidth="1.6" strokeLinecap="round" />
+              <circle cx="12" cy="16" r="1.5" fill="#17A8A8" />
+            </svg>
+          </div>
+          <h2 className="text-lg font-black mb-1" style={{ color: '#0B2545' }}>Client Portal</h2>
+          <p className="text-xs font-light" style={{ color: '#94A3B8' }}>AClean Building Solutions</p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
+          <div>
+            <label className="block text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: '#64748B' }}>
+              Client Number
+            </label>
+            <div className="relative">
+              <input
+                ref={inputRef}
+                type={showPw ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your client number"
+                className="w-full px-4 py-3 pr-11 rounded-xl text-sm font-light focus:outline-none focus:ring-2 transition-all duration-200"
+                style={{
+                  backgroundColor: error ? '#FEF2F2' : '#F4F7FB',
+                  border: `1px solid ${error ? '#FCA5A5' : 'rgba(11,37,69,0.12)'}`,
+                  color: '#0B2545',
+                  focusRingColor: '#17A8A8',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPw((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
+                style={{ color: '#94A3B8' }}
+                tabIndex={-1}
+              >
+                {showPw ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="1.5" />
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            <AnimatePresence>
+              {error && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-xs text-red-500 mt-1.5"
+                >
+                  Incorrect password. Please try again.
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3.5 rounded-xl font-semibold text-sm tracking-wide text-white transition-all duration-200 hover:brightness-110"
+            style={{ backgroundColor: '#17A8A8', minHeight: 48 }}
+          >
+            Access with Client Number
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-2 text-xs font-medium transition-colors duration-200"
+            style={{ color: '#94A3B8' }}
+          >
+            Cancel
+          </button>
+        </form>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [portalOpen, setPortalOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -23,11 +160,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    document.body.style.overflow = mobileOpen || portalOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [mobileOpen])
+  }, [mobileOpen, portalOpen])
 
   const handleNav = (e, href) => {
     e.preventDefault()
@@ -56,18 +192,8 @@ export default function Navbar() {
               onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
               className="flex items-center flex-shrink-0"
             >
-              <img
-                src="/logos/AClean_Logo.svg"
-                alt="AClean Building Solutions"
-                style={{ height: 46, width: 'auto' }}
-                className="md:hidden"
-              />
-              <img
-                src="/logos/AClean_Logo.svg"
-                alt="AClean Building Solutions"
-                style={{ height: 62, width: 'auto' }}
-                className="hidden md:block"
-              />
+              <img src="/logos/AClean_Logo.svg" alt="AClean Building Solutions" style={{ height: 46, width: 'auto' }} className="md:hidden" />
+              <img src="/logos/AClean_Logo.svg" alt="AClean Building Solutions" style={{ height: 62, width: 'auto' }} className="hidden md:block" />
             </a>
 
             {/* Desktop links */}
@@ -87,17 +213,35 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Desktop CTA */}
-            <a
-              href="#contact"
-              onClick={(e) => handleNav(e, '#contact')}
-              className="hidden md:inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold tracking-wide text-white transition-all duration-200"
-              style={{ backgroundColor: '#17A8A8' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0E9090')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#17A8A8')}
-            >
-              Get a Quote
-            </a>
+            {/* Desktop CTAs */}
+            <div className="hidden md:flex items-center gap-3">
+              {/* Client Portal button */}
+              <button
+                onClick={() => setPortalOpen(true)}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all duration-200"
+                style={{ color: '#0B2545', border: '1.5px solid rgba(11,37,69,0.18)', backgroundColor: 'transparent' }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#17A8A8'; e.currentTarget.style.color = '#17A8A8' }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(11,37,69,0.18)'; e.currentTarget.style.color = '#0B2545' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+                Client Portal
+              </button>
+
+              {/* Get a Quote */}
+              <a
+                href="#contact"
+                onClick={(e) => handleNav(e, '#contact')}
+                className="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold tracking-wide text-white transition-all duration-200"
+                style={{ backgroundColor: '#17A8A8' }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0E9090')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#17A8A8')}
+              >
+                Get a Quote
+              </a>
+            </div>
 
             {/* Mobile hamburger */}
             <button
@@ -106,30 +250,15 @@ export default function Navbar() {
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               style={{ backgroundColor: mobileOpen ? 'rgba(11,37,69,0.06)' : 'transparent' }}
             >
-              <motion.span
-                className="block h-0.5 rounded-full"
-                style={{ backgroundColor: '#0B2545' }}
-                animate={mobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-                transition={{ duration: 0.25 }}
-              />
-              <motion.span
-                className="block h-0.5 rounded-full"
-                style={{ backgroundColor: '#0B2545' }}
-                animate={mobileOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-                transition={{ duration: 0.2 }}
-              />
-              <motion.span
-                className="block h-0.5 rounded-full"
-                style={{ backgroundColor: '#0B2545' }}
-                animate={mobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-                transition={{ duration: 0.25 }}
-              />
+              <motion.span className="block h-0.5 rounded-full" style={{ backgroundColor: '#0B2545' }} animate={mobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }} transition={{ duration: 0.25 }} />
+              <motion.span className="block h-0.5 rounded-full" style={{ backgroundColor: '#0B2545' }} animate={mobileOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }} transition={{ duration: 0.2 }} />
+              <motion.span className="block h-0.5 rounded-full" style={{ backgroundColor: '#0B2545' }} animate={mobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }} transition={{ duration: 0.25 }} />
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Full-screen mobile overlay */}
+      {/* Mobile overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -141,28 +270,17 @@ export default function Navbar() {
             className="md:hidden fixed inset-0 z-[60] flex flex-col"
             style={{ backgroundColor: '#0B2545' }}
           >
-            {/* Overlay header */}
             <div className="flex items-center justify-between px-5 h-16 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-              <img
-                src="/logos/AClean_Logo dark background.svg"
-                alt="AClean Building Solutions"
-                style={{ height: 34, width: 'auto' }}
-              />
-              <button
-                onClick={() => setMobileOpen(false)}
-                aria-label="Close menu"
-                className="w-11 h-11 flex items-center justify-center rounded-xl flex-shrink-0"
-                style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
-              >
+              <img src="/logos/AClean_Logo dark background.svg" alt="AClean Building Solutions" style={{ height: 34, width: 'auto' }} />
+              <button onClick={() => setMobileOpen(false)} aria-label="Close menu" className="w-11 h-11 flex items-center justify-center rounded-xl flex-shrink-0" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <path d="M2 2l14 14M16 2L2 16" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
               </button>
             </div>
 
-            {/* Nav links */}
             <div className="flex-1 flex flex-col justify-center px-6 py-8 overflow-y-auto">
-              <nav className="flex flex-col mb-10">
+              <nav className="flex flex-col mb-8">
                 {navLinks.map((link, i) => (
                   <motion.a
                     key={link.href}
@@ -172,41 +290,52 @@ export default function Navbar() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.05 + i * 0.07, duration: 0.3 }}
                     className="flex items-center font-bold text-white text-2xl py-4"
-                    style={{
-                      borderBottom: '1px solid rgba(255,255,255,0.07)',
-                      minHeight: 64,
-                    }}
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', minHeight: 64 }}
                   >
                     {link.label}
                   </motion.a>
                 ))}
               </nav>
 
+              {/* Mobile: Client Portal */}
+              <motion.button
+                onClick={() => { setMobileOpen(false); setTimeout(() => setPortalOpen(true), 320) }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 + navLinks.length * 0.07 }}
+                className="flex items-center justify-center gap-2 w-full rounded-xl font-semibold text-base mb-3"
+                style={{ border: '1.5px solid rgba(255,255,255,0.25)', color: 'white', minHeight: 52, backgroundColor: 'transparent' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+                Client Portal
+              </motion.button>
+
               <motion.a
                 href="#contact"
                 onClick={(e) => handleNav(e, '#contact')}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 + navLinks.length * 0.07 + 0.05 }}
+                transition={{ delay: 0.05 + navLinks.length * 0.07 + 0.07 }}
                 className="flex items-center justify-center w-full rounded-xl font-semibold text-base text-white"
                 style={{ backgroundColor: '#17A8A8', minHeight: 56 }}
               >
                 Get a Quote
               </motion.a>
 
-              {/* Bottom info */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="mt-8 text-center text-xs font-light"
-                style={{ color: 'rgba(255,255,255,0.3)' }}
-              >
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mt-8 text-center text-xs font-light" style={{ color: 'rgba(255,255,255,0.3)' }}>
                 Commercial Cleaning &amp; Building Maintenance · NJ · NY · PA
               </motion.p>
             </div>
           </motion.div>
         )}
+      </AnimatePresence>
+
+      {/* Portal modal */}
+      <AnimatePresence>
+        {portalOpen && <PortalModal onClose={() => setPortalOpen(false)} />}
       </AnimatePresence>
     </>
   )

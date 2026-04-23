@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 
+const EXPO = [0.16, 1, 0.3, 1]
+
 const pillars = [
   {
     title: 'Commercial Cleaning & Building Maintenance',
@@ -32,9 +34,9 @@ export default function WhyAClean() {
           {/* Left */}
           <motion.div
             ref={ref}
-            initial={{ opacity: 0, y: 28 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+            transition={{ duration: 0.6, ease: EXPO }}
           >
             <span className="inline-block text-xs font-semibold tracking-[0.18em] uppercase mb-3" style={{ color: '#17A8A8' }}>
               Why AClean
@@ -91,9 +93,9 @@ export default function WhyAClean() {
             {pillars.map(({ title, description }, i) => (
               <motion.div
                 key={title}
-                initial={{ opacity: 0, x: 28 }}
-                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 28 }}
-                transition={{ duration: 0.55, delay: 0.12 + i * 0.1 }}
+                initial={{ opacity: 0, y: 32 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+                transition={{ duration: 0.6, ease: EXPO, delay: i * 0.08 }}
                 className="bg-white p-5 sm:p-6 rounded-2xl"
                 style={{
                   borderTop: '1px solid rgba(11,37,69,0.07)',

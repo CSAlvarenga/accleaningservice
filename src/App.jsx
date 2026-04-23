@@ -9,6 +9,37 @@ import ServiceArea from './components/ServiceArea'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 
+function WaveDivider() {
+  return (
+    <div
+      style={{ backgroundColor: '#ffffff', lineHeight: 0, overflow: 'hidden' }}
+      aria-hidden="true"
+    >
+      <svg
+        viewBox="0 0 1440 80"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        overflow="visible"
+        style={{ display: 'block', width: '100%', height: 80 }}
+      >
+        {/* Back wave — 40% opacity, drifts right */}
+        <path
+          className="wave-back"
+          d="M-150,46 C120,18 360,70 600,46 C840,18 1080,68 1320,46 C1400,30 1530,56 1590,46 L1590,80 L-150,80 Z"
+          fill="#0B2545"
+          fillOpacity="0.4"
+        />
+        {/* Front wave — full opacity, drifts left */}
+        <path
+          className="wave-front"
+          d="M-150,62 C200,40 420,80 660,62 C900,42 1120,80 1360,62 C1440,54 1530,68 1590,62 L1590,80 L-150,80 Z"
+          fill="#0B2545"
+        />
+      </svg>
+    </div>
+  )
+}
+
 function WhatsAppButton() {
   return (
     <a
@@ -41,6 +72,7 @@ export default function App() {
         <WhyAClean />
         <ServiceArea />
         <Contact />
+        <WaveDivider />
         <Footer />
       </div>
     </>

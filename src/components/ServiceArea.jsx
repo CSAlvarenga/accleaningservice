@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 
+const EXPO = [0.16, 1, 0.3, 1]
+
 const states = [
   {
     abbr: 'NJ',
@@ -31,9 +33,9 @@ export default function ServiceArea() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 28 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ duration: 0.6, ease: EXPO }}
           className="text-center mb-10 sm:mb-14"
         >
           <span className="inline-block text-xs font-semibold tracking-[0.18em] uppercase mb-3" style={{ color: '#17A8A8' }}>
@@ -52,9 +54,9 @@ export default function ServiceArea() {
           {states.map(({ abbr, name, note, primary }, i) => (
             <motion.div
               key={abbr}
-              initial={{ opacity: 0, y: 32, scale: 0.97 }}
-              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.97 }}
-              transition={{ duration: 0.55, delay: 0.1 + i * 0.12 }}
+              initial={{ opacity: 0, y: 32 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+              transition={{ duration: 0.6, ease: EXPO, delay: i * 0.08 }}
               className="group relative rounded-2xl p-6 sm:p-8 text-center overflow-hidden"
               style={{
                 backgroundColor: primary ? '#0B2545' : 'white',
@@ -111,9 +113,9 @@ export default function ServiceArea() {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ duration: 0.6, ease: EXPO, delay: 0.24 }}
           className="rounded-2xl p-6 sm:p-10 text-center"
           style={{ backgroundColor: '#F4F7FB', border: '1px solid rgba(23,168,168,0.12)' }}
         >

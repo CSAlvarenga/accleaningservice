@@ -36,6 +36,18 @@
   .custom-cursor { display: none; }
 }
 
+/* ── Wave divider keyframes ─────────────────────────────────────────────────── */
+@keyframes wave-drift-r {
+  0%, 100% { transform: translateX(0px); }
+  50%       { transform: translateX(22px); }
+}
+@keyframes wave-drift-l {
+  0%, 100% { transform: translateX(0px); }
+  50%       { transform: translateX(-22px); }
+}
+.wave-back  { animation: wave-drift-r 8s ease-in-out infinite; }
+.wave-front { animation: wave-drift-l 8s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
