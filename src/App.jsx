@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import Cursor from './components/Cursor'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -5,6 +7,7 @@ import TrustBar from './components/TrustBar'
 import Industries from './components/Industries'
 import Services from './components/Services'
 import WhyAClean from './components/WhyAClean'
+import Testimonials from './components/Testimonials'
 import ServiceArea from './components/ServiceArea'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
@@ -58,18 +61,85 @@ function WhatsAppButton() {
   )
 }
 
+function PageLoader() {
+  return (
+    <motion.div
+      key="page-loader"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-white"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.06 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <motion.div
+        animate={{ scale: [1, 1.1, 1], opacity: [0.65, 1, 0.65] }}
+        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <svg
+          width="80"
+          height="80"
+          viewBox="0 0 200 200"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-label="AClean Building Solutions"
+          role="img"
+        >
+          <defs>
+            <linearGradient id="loaderAGrad" x1="0%" y1="100%" x2="50%" y2="0%">
+              <stop offset="0%" stopColor="#236B66" />
+              <stop offset="100%" stopColor="#0F182B" />
+            </linearGradient>
+            <mask id="loaderCutoutMask">
+              <rect width="100%" height="100%" fill="white" />
+              <path
+                fill="black"
+                stroke="black"
+                strokeWidth="8"
+                strokeLinejoin="round"
+                d="M148.04 167.56L148.04 167.56Q134.60 167.56 123.16 163.32Q111.72 159.08 103.32 151.24Q94.92 143.40 90.28 132.68Q85.64 121.96 85.64 109L85.64 109Q85.64 96.04 90.28 85.32Q94.92 74.60 103.32 66.76Q111.72 58.92 123.16 54.68Q134.60 50.44 148.04 50.44L148.04 50.44Q164.52 50.44 177.24 56.20Q189.96 61.96 198.28 72.84L198.28 72.84L174.44 94.12Q169.48 87.88 163.48 84.44Q157.48 81 149.96 81L149.96 81Q138.28 81 131 88.60Q123.72 96.20 123.72 109L123.72 109Q123.72 121.80 131 129.40Q138.28 137 149.96 137L149.96 137Q157.48 137 163.48 133.56Q169.48 130.12 174.44 123.88L174.44 123.88L198.28 145.16Q189.96 155.88 177.24 161.72Q164.52 167.56 148.04 167.56Z"
+              />
+            </mask>
+          </defs>
+          <g mask="url(#loaderCutoutMask)">
+            <path
+              fill="url(#loaderAGrad)"
+              d="M41.36 165L2.96 165L51.92 53L89.04 53L138 165L98.96 165L91.44 145.48L48.88 145.48L41.36 165ZM70.16 90.12L59.28 118.28L81.04 118.28L70.16 90.12Z"
+            />
+          </g>
+          <path
+            fill="#1B2A41"
+            d="M148.04 167.56L148.04 167.56Q134.60 167.56 123.16 163.32Q111.72 159.08 103.32 151.24Q94.92 143.40 90.28 132.68Q85.64 121.96 85.64 109L85.64 109Q85.64 96.04 90.28 85.32Q94.92 74.60 103.32 66.76Q111.72 58.92 123.16 54.68Q134.60 50.44 148.04 50.44L148.04 50.44Q164.52 50.44 177.24 56.20Q189.96 61.96 198.28 72.84L198.28 72.84L174.44 94.12Q169.48 87.88 163.48 84.44Q157.48 81 149.96 81L149.96 81Q138.28 81 131 88.60Q123.72 96.20 123.72 109L123.72 109Q123.72 121.80 131 129.40Q138.28 137 149.96 137L149.96 137Q157.48 137 163.48 133.56Q169.48 130.12 174.44 123.88L174.44 123.88L198.28 145.16Q189.96 155.88 177.24 161.72Q164.52 167.56 148.04 167.56Z"
+          />
+        </svg>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 export default function App() {
+  const [isLoaded, setIsLoaded] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const t = setTimeout(() => setIsLoaded(true), 900)
+    return () => clearTimeout(t)
+  }, [])
+
   return (
     <>
+      <AnimatePresence>
+        {!isLoaded && <PageLoader key="loader" />}
+      </AnimatePresence>
       <Cursor />
       <WhatsAppButton />
       <div className="min-h-screen bg-white overflow-x-hidden">
-        <Navbar />
-        <Hero />
+        <Navbar isLoaded={isLoaded} />
+        <Hero isLoaded={isLoaded} />
         <TrustBar />
         <Industries />
         <Services />
         <WhyAClean />
+        <Testimonials />
         <ServiceArea />
         <Contact />
         <WaveDivider />

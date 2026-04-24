@@ -149,7 +149,7 @@ function PortalModal({ onClose }) {
 }
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
-export default function Navbar() {
+export default function Navbar({ isLoaded }) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [portalOpen, setPortalOpen] = useState(false)
@@ -173,8 +173,11 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
+      <motion.nav
         className="fixed top-0 left-0 right-0 z-50"
+        initial={{ y: -20, opacity: 0 }}
+        animate={isLoaded ? { y: 0, opacity: 1 } : { y: -20, opacity: 0 }}
+        transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
         style={{
           backgroundColor: scrolled ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0)',
           borderBottom: scrolled ? '1px solid rgba(11,37,69,0.08)' : '1px solid transparent',
@@ -256,7 +259,7 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile overlay */}
       <AnimatePresence>

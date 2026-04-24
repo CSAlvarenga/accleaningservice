@@ -60,7 +60,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
 }
 
-export default function Hero() {
+export default function Hero({ isLoaded }) {
   const reduced = useReducedMotion()
   const { scrollY } = useScroll()
   const rawImageY = useTransform(scrollY, [0, 600], [0, -80])
@@ -106,7 +106,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full">
 
           {/* Left: copy */}
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="min-w-0">
+          <motion.div variants={containerVariants} initial="hidden" animate={isLoaded ? "visible" : "hidden"} className="min-w-0">
             <motion.div variants={itemVariants} className="mb-4">
               <div
                 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold tracking-[0.08em] sm:tracking-[0.18em] uppercase"
@@ -129,10 +129,10 @@ export default function Hero() {
                 <motion.span
                   key={word}
                   initial={reduced ? false : { opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={reduced
                     ? { duration: 0 }
-                    : { duration: 0.55, ease: EXPO, delay: 0.33 + i * 0.07 }
+                    : { duration: 0.55, ease: EXPO, delay: 0.15 + i * 0.07 }
                   }
                   style={{ display: 'inline-block', marginRight: '0.28em' }}
                 >
@@ -144,10 +144,10 @@ export default function Hero() {
                   <motion.span
                     key={word}
                     initial={reduced ? false : { opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                     transition={reduced
                       ? { duration: 0 }
-                      : { duration: 0.55, ease: EXPO, delay: 0.33 + (HEADLINE_WORDS.length + i) * 0.07 }
+                      : { duration: 0.55, ease: EXPO, delay: 0.15 + (HEADLINE_WORDS.length + i) * 0.07 }
                     }
                     style={{
                       display: 'inline-block',
@@ -203,8 +203,8 @@ export default function Hero() {
           {/* Right: image (desktop only) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.85, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            animate={isLoaded ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
+            transition={{ duration: 0.85, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="relative hidden lg:block"
           >
             <div
@@ -251,8 +251,8 @@ export default function Hero() {
           {/* Mobile image — below text, no parallax */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.6 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+            transition={{ duration: 0.7, delay: 0.35 }}
             className="block lg:hidden w-full"
           >
             <div

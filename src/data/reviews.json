@@ -1,0 +1,58 @@
+{
+  "place_id": "ChIJmUMh9XNBsq4RNTJQLz_QpV8",
+  "place_name": "AClean Building Solutions",
+  "address": "29 Joseph St, South River, NJ 08882, USA",
+  "rating": 5,
+  "total_reviews": 6,
+  "maps_url": "https://maps.google.com/?cid=6892143774555714101",
+  "reviews_url": "https://maps.app.goo.gl/MaeuJpk7uLv8nYnz9",
+  "write_review_url": "https://g.page/r/CTUyUC8_0KVfEAE/review",
+  "fetched_at": "2026-04-24T21:29:36.397Z",
+  "reviews": [
+    {
+      "author_name": "Patricia Rego",
+      "author_url": "https://www.google.com/maps/contrib/101747491989490400491/reviews",
+      "profile_photo_url": "https://lh3.googleusercontent.com/a-/ALV-UjU4x0K0A7J8jKxlmWkp6Vygev5jQDlwmDiKCj6dbzp6C2Uw6R-e=s128-c0x00000000-cc-rp-mo",
+      "rating": 5,
+      "text": "I had a very good experience. Great service and everything went smoothly. I would definitely recommend!",
+      "time": 1777045512,
+      "relative_time_description": "in the last week"
+    },
+    {
+      "author_name": "Hamilton Alvarenga",
+      "author_url": "https://www.google.com/maps/contrib/105665764609136014481/reviews",
+      "profile_photo_url": "https://lh3.googleusercontent.com/a-/ALV-UjWYICuwhPjdCcM80OMzYuRZ-2JAyuehl2XPd4mTJxrtSrfbNy4=s128-c0x00000000-cc-rp-mo",
+      "rating": 5,
+      "text": "Excellent work.  Highly recommended. Thank you guys!",
+      "time": 1777033138,
+      "relative_time_description": "in the last week"
+    },
+    {
+      "author_name": "Michelle Marques",
+      "author_url": "https://www.google.com/maps/contrib/109798117520923351405/reviews",
+      "profile_photo_url": "https://lh3.googleusercontent.com/a-/ALV-UjWSO-jE7YqQlG21f-KgVf9yD8NJE0p1hdSDw8yEcAymLuBtuqJ-=s128-c0x00000000-cc-rp-mo-ba2",
+      "rating": 5,
+      "text": "It’s been an incredible experience. Their attention to detail, professionalism, and genuine care for their work truly set them apart.\nEverything is cleaned with excellence and consistency.\nI highly recommend their services to anyone looking for reliability and quality.",
+      "time": 1777029245,
+      "relative_time_description": "in the last week"
+    },
+    {
+      "author_name": "Mariana Nogueira75",
+      "author_url": "https://www.google.com/maps/contrib/117273660262528920977/reviews",
+      "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocKwTWuLHH9eX1lsHcG_pXdK3dc7NHi5BNei6W_AjkmJx0z5Uw=s128-c0x00000000-cc-rp-mo-ba3",
+      "rating": 5,
+      "text": "I’ve never seen such an amazing company like this ! What I like most is, they are very attentions.",
+      "time": 1777027538,
+      "relative_time_description": "in the last week"
+    },
+    {
+      "author_name": "Yuri Rocco Chinchow",
+      "author_url": "https://www.google.com/maps/contrib/100555722313132828763/reviews",
+      "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocKPzHH6rS5B5tBEyNbwnb8nAOk2yK3k-WCPye-lyClPGUemKA=s128-c0x00000000-cc-rp-mo",
+      "rating": 5,
+      "text": "",
+      "time": 1776996800,
+      "relative_time_description": "in the last week"
+    }
+  ]
+}
