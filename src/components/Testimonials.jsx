@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import { motion } from 'motion/react'
-import { useRef } from 'react'
-import { useInView } from 'motion/react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import reviewsData from '../data/reviews.json'
 
 const EXPO = [0.16, 1, 0.3, 1]
+const INTERVAL = 5000
+
+// ─── Micro components ─────────────────────────────────────────────────────────
 
 function StarIcon({ filled, size = 16 }) {
   return (
@@ -53,18 +54,14 @@ function initials(name) {
   return name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase()
 }
 
-function ReviewCard({ review, index }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, amount: 0.1 })
+// ─── Review card ──────────────────────────────────────────────────────────────
+
+function ReviewCard({ review }) {
   const [imgErr, setImgErr] = useState(false)
   const bg = avatarColor(review.author_name)
 
   return (
-    <motion.article
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, ease: EXPO, delay: index * 0.08 }}
+    <div
       className="flex flex-col bg-white rounded-2xl p-5 sm:p-6 h-full overflow-hidden"
       style={{ border: '1px solid rgba(11,37,69,0.08)', boxShadow: '0 2px 16px rgba(11,37,69,0.06)' }}
     >
@@ -75,7 +72,7 @@ function ReviewCard({ review, index }) {
               onError={() => setImgErr(true)} referrerPolicy="no-referrer"
               width="40" height="40" className="w-10 h-10 rounded-full object-cover" />
           ) : (
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
               style={{ backgroundColor: bg }}>
               {initials(review.author_name)}
             </div>
@@ -87,31 +84,182 @@ function ReviewCard({ review, index }) {
         </div>
         <div className="flex-shrink-0 mt-0.5"><GoogleLogo size={18} /></div>
       </div>
+
       <StarRating rating={review.rating} size={14} />
-      <p className="text-sm leading-relaxed mt-3 flex-1 line-clamp-3 overflow-hidden" style={{ color: '#475569' }}>
-        {review.text || 'Great service!'}
-      </p>
+
+      {review.text ? (
+        <p className="text-sm leading-relaxed mt-3 flex-1 line-clamp-3 overflow-hidden" style={{ color: '#475569' }}>
+          {review.text}
+        </p>
+      ) : (
+        <div className="flex-1" />
+      )}
+
       {review.author_url && (
         <a href={review.author_url} target="_blank" rel="noopener noreferrer"
           className="mt-4 text-xs font-medium transition-colors duration-200 w-fit"
-          style={{ color: '#17A8A8' }}>
+          style={{ color: '#17A8A8' }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#0E9090')}
+          onMouseLeave={e => (e.currentTarget.style.color = '#17A8A8')}>
           View on Google →
         </a>
       )}
-    </motion.article>
+    </div>
   )
 }
 
+// ─── Carousel ─────────────────────────────────────────────────────────────────
+
+function ChevronIcon({ dir }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path d={dir === 'left' ? 'M15 18l-6-6 6-6' : 'M9 18l6-6-6-6'}
+        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function ReviewsCarousel({ reviews }) {
+  const [current, setCurrent] = useState(0)
+  const [direction, setDirection] = useState(1)
+  const [paused, setPaused] = useState(false)
+  const n = reviews.length
+
+  const advance = useCallback((d) => {
+    setDirection(d)
+    setCurrent(c => (c + d + n) % n)
+  }, [n])
+
+  useEffect(() => {
+    if (paused) return
+    const t = setInterval(() => advance(1), INTERVAL)
+    return () => clearInterval(t)
+  }, [paused, advance])
+
+  const r = (offset) => reviews[(current + offset + n) % n]
+
+  const variants = {
+    enter: (d) => ({ opacity: 0, x: d > 0 ? 40 : -40 }),
+    center: { opacity: 1, x: 0 },
+    exit:  (d) => ({ opacity: 0, x: d > 0 ? -40 : 40 }),
+  }
+
+  return (
+    <div
+      className="mb-10 md:mb-14"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+
+        {/* Card 1 — always visible */}
+        <AnimatePresence mode="popLayout" custom={direction}>
+          <motion.div key={`a-${current}`} custom={direction}
+            variants={variants} initial="enter" animate="center" exit="exit"
+            transition={{ duration: 0.35, ease: EXPO }}
+            className="h-full"
+          >
+            <ReviewCard review={r(0)} />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Card 2 — md+ */}
+        <div className="hidden md:block h-full">
+          <AnimatePresence mode="popLayout" custom={direction}>
+            <motion.div key={`b-${current}`} custom={direction}
+              variants={variants} initial="enter" animate="center" exit="exit"
+              transition={{ duration: 0.35, ease: EXPO, delay: 0.05 }}
+              className="h-full"
+            >
+              <ReviewCard review={r(1)} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Card 3 — lg+ */}
+        <div className="hidden lg:block h-full">
+          <AnimatePresence mode="popLayout" custom={direction}>
+            <motion.div key={`c-${current}`} custom={direction}
+              variants={variants} initial="enter" animate="center" exit="exit"
+              transition={{ duration: 0.35, ease: EXPO, delay: 0.1 }}
+              className="h-full"
+            >
+              <ReviewCard review={r(2)} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-center gap-4 mt-6">
+        {/* Prev */}
+        <button
+          onClick={() => advance(-1)}
+          aria-label="Previous review"
+          className="flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 cursor-pointer"
+          style={{ border: '1.5px solid rgba(11,37,69,0.15)', color: '#0B2545' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = '#17A8A8'; e.currentTarget.style.color = '#17A8A8' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(11,37,69,0.15)'; e.currentTarget.style.color = '#0B2545' }}
+        >
+          <ChevronIcon dir="left" />
+        </button>
+
+        {/* Dots */}
+        <div className="flex items-center gap-2">
+          {reviews.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i) }}
+              aria-label={`Go to review ${i + 1}`}
+              className="rounded-full transition-all duration-300 cursor-pointer"
+              style={{
+                width: i === current ? 20 : 8,
+                height: 8,
+                backgroundColor: i === current ? '#17A8A8' : 'rgba(11,37,69,0.18)',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Next */}
+        <button
+          onClick={() => advance(1)}
+          aria-label="Next review"
+          className="flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 cursor-pointer"
+          style={{ border: '1.5px solid rgba(11,37,69,0.15)', color: '#0B2545' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = '#17A8A8'; e.currentTarget.style.color = '#17A8A8' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(11,37,69,0.15)'; e.currentTarget.style.color = '#0B2545' }}
+        >
+          <ChevronIcon dir="right" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── Main section ─────────────────────────────────────────────────────────────
+
 export default function Testimonials() {
-  const { reviews = [], rating, total_reviews, maps_url, reviews_url, write_review_url, place_name, address } = reviewsData
-  const hasReviews    = reviews.length > 0
+  const {
+    reviews = [],
+    rating,
+    total_reviews,
+    maps_url,
+    reviews_url,
+    write_review_url,
+    place_name,
+    address,
+  } = reviewsData
+
   const displayRating = rating ?? 5.0
-  const writeUrl      = write_review_url || reviews_url
+  const writeUrl = write_review_url || reviews_url
 
   return (
     <section id="reviews" className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+        {/* Header */}
         <div className="text-center mb-10 md:mb-14">
           <span className="inline-block text-xs font-semibold tracking-[0.18em] uppercase mb-3" style={{ color: '#17A8A8' }}>
             Google Reviews
@@ -122,6 +270,7 @@ export default function Testimonials() {
           <p className="text-sm sm:text-base leading-relaxed font-light max-w-xl mx-auto" style={{ color: '#64748B' }}>
             Real feedback from businesses across New Jersey, New York &amp; Pennsylvania.
           </p>
+
           {total_reviews > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
               <span className="text-3xl font-black" style={{ color: '#0B2545' }}>{displayRating.toFixed(1)}</span>
@@ -129,7 +278,10 @@ export default function Testimonials() {
               <span className="text-sm font-medium" style={{ color: '#64748B' }}>
                 Based on{' '}
                 <a href={reviews_url} target="_blank" rel="noopener noreferrer"
-                  className="font-bold" style={{ color: '#0B2545' }}>
+                  className="font-bold transition-colors duration-200"
+                  style={{ color: '#0B2545' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#17A8A8')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#0B2545')}>
                   {total_reviews} reviews
                 </a>
               </span>
@@ -138,27 +290,14 @@ export default function Testimonials() {
           )}
         </div>
 
-        {hasReviews && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 md:gap-5 mb-10 md:mb-14">
-            {reviews.map((review, i) => {
-              const lastRowCount = reviews.length % 3 || 3
-              const isLastRow = i >= reviews.length - lastRowCount
-              const posInLastRow = i - (reviews.length - lastRowCount)
-              let colStart = ''
-              if (isLastRow && lastRowCount === 1) colStart = 'md:col-start-3'
-              if (isLastRow && lastRowCount === 2) colStart = posInLastRow === 0 ? 'md:col-start-2' : 'md:col-start-4'
-              return (
-                <div key={review.time ?? i} className={`md:col-span-2 ${colStart} h-full`}>
-                  <ReviewCard review={review} index={i} />
-                </div>
-              )
-            })}
-          </div>
-        )}
+        {/* Carousel */}
+        {reviews.length > 0 && <ReviewsCarousel reviews={reviews} />}
 
+        {/* Find us on Google CTA */}
         <div className="rounded-2xl overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #0B2545 0%, #163660 100%)', border: '1px solid rgba(23,168,168,0.18)', boxShadow: '0 8px 40px rgba(11,37,69,0.18)' }}>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 sm:p-8 md:p-10">
+
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
                 style={{ backgroundColor: 'rgba(23,168,168,0.15)', border: '1px solid rgba(23,168,168,0.25)' }}>
@@ -188,6 +327,7 @@ export default function Testimonials() {
                 </div>
               </div>
             </div>
+
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-shrink-0">
               <a href={maps_url} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm text-white transition-all duration-200 hover:brightness-110"
