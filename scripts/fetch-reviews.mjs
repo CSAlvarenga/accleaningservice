@@ -20,6 +20,13 @@ const MAPS_URL        = 'https://maps.google.com/?cid=6892143774555714101'
 const REVIEWS_URL     = 'https://maps.app.goo.gl/MaeuJpk7uLv8nYnz9'
 const WRITE_REVIEW_URL = 'https://g.page/r/CTUyUC8_0KVfEAE/review'
 
+// Strip street number — only show city, state, zip, country
+function formatAddress(full) {
+  if (!full) return ''
+  const parts = full.split(', ')
+  return parts.length > 1 ? parts.slice(1).join(', ') : full
+}
+
 function loadEnv() {
   const envPath = resolve(rootDir, '.env')
   if (!existsSync(envPath)) return {}
@@ -77,7 +84,7 @@ async function main() {
   const output = {
     place_id:         placeId,
     place_name:       r.name || BUSINESS_NAME,
-    address:          r.formatted_address || '',
+    address:          formatAddress(r.formatted_address),
     rating:           r.rating ?? 5,
     total_reviews:    r.user_ratings_total ?? 0,
     maps_url:         MAPS_URL,
