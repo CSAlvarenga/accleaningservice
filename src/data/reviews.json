@@ -3,12 +3,30 @@
   "place_name": "AClean Building Solutions",
   "address": "South River, NJ 08882, USA",
   "rating": 5,
-  "total_reviews": 6,
+  "total_reviews": 8,
   "maps_url": "https://maps.google.com/?cid=6892143774555714101",
   "reviews_url": "https://maps.app.goo.gl/MaeuJpk7uLv8nYnz9",
   "write_review_url": "https://g.page/r/CTUyUC8_0KVfEAE/review",
-  "fetched_at": "2026-04-24T21:29:36.397Z",
+  "fetched_at": "2026-04-25T14:37:33.920Z",
   "reviews": [
+    {
+      "author_name": "Jessica Maffei",
+      "author_url": "https://www.google.com/maps/contrib/111179480068457798908/reviews",
+      "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocIs7l3_T_Y-NhdUtMEOe0kIjdMxutfrJOHrZLcpWlqtxsU8Ng=s128-c0x00000000-cc-rp-mo",
+      "rating": 5,
+      "text": "AClean Building Solutions delivers outstanding service from start to finish. The quality exceeded my expectations. Highly recommend!",
+      "time": 1777125161,
+      "relative_time_description": "in the last week"
+    },
+    {
+      "author_name": "Nathany Alves",
+      "author_url": "https://www.google.com/maps/contrib/102265178310886196480/reviews",
+      "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocIyCyBjmpJAR6Rqb47yDcJV546LghQBAA4Uh2Lvt6am-NUoEw=s128-c0x00000000-cc-rp-mo",
+      "rating": 5,
+      "text": "I’ve been using their cleaning services for over a year now, both at my home and for my business, and I honestly couldn’t be happier. Their work is always impeccable, everything is done with so much attention to detail.\n\nWhat really stands out is their customer service. They’re always available if I need to request something specific or make changes to my schedule, which makes everything so easy and stress-free.\n\nOn top of that, their pricing is very fair for the quality they deliver. I highly recommend them to anyone looking for reliable, professional cleaning services!",
+      "time": 1777116027,
+      "relative_time_description": "in the last week"
+    },
     {
       "author_name": "Patricia Rego",
       "author_url": "https://www.google.com/maps/contrib/101747491989490400491/reviews",
@@ -34,24 +52,6 @@
       "rating": 5,
       "text": "It’s been an incredible experience. Their attention to detail, professionalism, and genuine care for their work truly set them apart.\nEverything is cleaned with excellence and consistency.\nI highly recommend their services to anyone looking for reliability and quality.",
       "time": 1777029245,
-      "relative_time_description": "in the last week"
-    },
-    {
-      "author_name": "Mariana Nogueira75",
-      "author_url": "https://www.google.com/maps/contrib/117273660262528920977/reviews",
-      "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocKwTWuLHH9eX1lsHcG_pXdK3dc7NHi5BNei6W_AjkmJx0z5Uw=s128-c0x00000000-cc-rp-mo-ba3",
-      "rating": 5,
-      "text": "I’ve never seen such an amazing company like this ! What I like most is, they are very attentions.",
-      "time": 1777027538,
-      "relative_time_description": "in the last week"
-    },
-    {
-      "author_name": "Yuri Rocco Chinchow",
-      "author_url": "https://www.google.com/maps/contrib/100555722313132828763/reviews",
-      "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocKPzHH6rS5B5tBEyNbwnb8nAOk2yK3k-WCPye-lyClPGUemKA=s128-c0x00000000-cc-rp-mo",
-      "rating": 5,
-      "text": "",
-      "time": 1776996800,
       "relative_time_description": "in the last week"
     }
   ]
