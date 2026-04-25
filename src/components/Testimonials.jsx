@@ -196,7 +196,7 @@ export default function Testimonials() {
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white" />
                   <circle cx="12" cy="9" r="2.5" fill="#17A8A8" />
                 </svg>
-                Get Directions
+                View on Google
               </a>
               <a href={writeUrl} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm text-white transition-all duration-200"

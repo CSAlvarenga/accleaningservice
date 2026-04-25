@@ -300,7 +300,7 @@ export default function Hero({ isLoaded }) {
           >
             {[
               { value: 7,   suffix: '+', label: 'Years Experience' },
-              { value: 500, suffix: '+', label: 'Clients Served'   },
+              { value: 200, suffix: '+', label: 'Clients Served'   },
               { value: 3,   suffix: '',  label: 'States Covered'   },
             ].map((s, i) => (
               <div
